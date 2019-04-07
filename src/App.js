@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import web3 from "./web3";
+import consent from "./consent";
 import logo from './logo.svg';
 import './App.css';
 
