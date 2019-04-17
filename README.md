@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
@@ -66,3 +67,20 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 ### `npm run build` fails to minify
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+=======
+# Cover your Assets
+Solidity smart contract that saves consent to the rinkeby testnet.
+
+## Usage
+
+ 1. Alice creates a unique party using a string, such as "ThisIsMyPartyName".
+ 1. Alice invites Bob to join the party.
+ 1. Bob joins the party using the string provided.
+ 1. Alice confirms her consent to the party or cancels her consent.
+ 
+ <p align="center">
+  <img src="../Mas9311-assets-control_flow/Control_Flow_2.png"
+       alt="Control Flow Diagram"
+       height="500" />
+</p>
+>>>>>>> cd24bf384de1c33def889b07398607f2e8d29629
