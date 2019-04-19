@@ -1,4 +1,4 @@
-pragma solidity ^0.5.7;
+pragma solidity ^0.5.6;
 
 /// @author Michael Smith, Evan Steiner, Ezra Huston
 /// @title A simple consent-saving contract

@@ -11,7 +11,7 @@ import CreateParty from "./components/CreateParty";
 class App extends Component {
   state = {
     message: ""
-  }
+  };
 
   onSubmit = async event => {
     event.preventDefault();
