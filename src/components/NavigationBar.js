@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Menu, Header, Dropdown } from "semantic-ui-react";
-// import trojanSecret from "../trojanSecret";
+// import consent from "../consent";
 
 class NavigationBar extends Component {
   state = {
@@ -9,8 +9,8 @@ class NavigationBar extends Component {
   };
 
   async componentDidMount() {
-    const contractSymbol = "Hello";
-    const contractName = "World";
+    const contractSymbol = "Hello"; // await consent.methods.symbol().call();
+    const contractName = "World"; // await consent.methods.name().call();
     this.setState({ contractSymbol, contractName });
   }
 
