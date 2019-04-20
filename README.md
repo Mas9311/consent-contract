@@ -1,5 +1,11 @@
+# Cover Your Assets
 
-# Cover your Assets
+<p align="center">
+  <img src="../Mas9311-assets-control_flow/CYA_Logo_Zoomed.png"
+       align="center"
+       alt="Cover Your Assets logo"
+       height="120" />
+</p>
 
 Solidity smart contract that saves consent to the rinkeby testnet.
 
