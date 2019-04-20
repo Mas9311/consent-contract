@@ -5,7 +5,8 @@ import web3 from "./web3";
 import consent from "./consent";
 import logo from './logo.svg';
 import './App.css';
-import NavigationBar from "./components/NavigationBar";
+// import NavigationBar from "./components/NavigationBar";
+import TopBar from "./components/TopBar";
 import CreateParty from "./components/CreateParty";
 
 class App extends Component {
@@ -25,7 +26,7 @@ class App extends Component {
   render() {
     return (
         <Container>
-          <NavigationBar />
+          <TopBar />
           <div>
             <Card.Group>
               <Card color="blue" header="Register to Play">
@@ -36,15 +37,6 @@ class App extends Component {
                   <CreateParty />
                 </Card.Content>
               </Card>
-/*
-              <Card color="red" header="">
-                <Card.Content>
-                  <h4>We will surely miss you!</h4>
-                  <br />
-                  <Unregister />
-                </Card.Content>
-              </Card>
-              */
             </Card.Group>
 
           </div>
@@ -55,3 +47,14 @@ class App extends Component {
 }
 
 export default App;
+
+
+/* line 39
+              <Card color="red" header="">
+                <Card.Content>
+                  <h4>We will surely miss you!</h4>
+                  <br />
+                  <Unregister />
+                </Card.Content>
+              </Card>
+              */
