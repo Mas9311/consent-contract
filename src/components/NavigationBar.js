@@ -1,29 +1,42 @@
 import React, { Component } from "react";
 import { Menu, Header, Dropdown } from "semantic-ui-react";
-
+// import trojanSecret from "../trojanSecret";
 
 class NavigationBar extends Component {
-    state = {
-        contractName: ""
-    };
+  state = {
+    contractSymbol: "",
+    contractName: ""
+  };
 
-    //add more menu items here
-    render() {
-        return (
-            <Menu style={{ marginTop: "10px" }}>
-                <Menu.Item>
-                    <Header size="large">Consent Header</Header>
-                </Menu.Item>
-                <Menu.Item postion="right">
-                    <img
-                        src="/logo.svg" //insert logo here
-                        alt="consent logo"
+  async componentDidMount() {
+    const contractSymbol = "Hello";
+    const contractName = "World";
+    this.setState({ contractSymbol, contractName });
+  }
 
-                    />
-                </Menu.Item>
-            </Menu>
-        );
-    }
+  render() {
+    return (
+        <Menu style={{marginTop: "10px"}}>
+          <Menu.Item position="left">
+            <Dropdown item icon="wrench" simple>
+              <Dropdown.Menu>
+                <Dropdown.Item>Name={this.state.contractSymbol}</Dropdown.Item>
+                <Dropdown.Item>Symbol={this.state.contractName}</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </Menu.Item>
+          <Menu.Item>
+            <Header size="large">Welcome to the Consent-saving application!</Header>
+          </Menu.Item>
+          <Menu.Item postion="right">
+            <img style={{width: 100, height: 86}}
+                 src="CYA_Logo.png"
+                 alt="CYA logo"
+            />
+          </Menu.Item>
+        </Menu>
+    );
+  }
 }
 
 export default NavigationBar;

@@ -1,13 +1,9 @@
 import React, { Component } from 'react';
 import { Container, Card } from "semantic-ui-react";
-
 import web3 from "./web3";
 import consent from "./consent";
-import logo from './logo.svg';
-import './App.css';
-// import NavigationBar from "./components/NavigationBar";
-import TopBar from "./components/TopBar";
 import CreateParty from "./components/CreateParty";
+import NavigationBar from "./components/NavigationBar";
 
 class App extends Component {
   state = {
@@ -26,7 +22,8 @@ class App extends Component {
   render() {
     return (
         <Container>
-          <TopBar />
+          <NavigationBar />
+
           <div>
             <Card.Group>
               <Card color="blue" header="Register to Play">
@@ -38,7 +35,6 @@ class App extends Component {
                 </Card.Content>
               </Card>
             </Card.Group>
-
           </div>
 
         </Container>
