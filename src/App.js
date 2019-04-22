@@ -1,16 +1,13 @@
 import React, { Component } from 'react';
 import { Container, Card } from "semantic-ui-react";
-
 import web3 from "./web3";
-import consent from "./consent";
-import logo from './logo.svg';
-import './App.css';
-// import NavigationBar from "./components/NavigationBar";
-import TopBar from "./components/TopBar";
+// import consent from "./consent";
 import CreateParty from "./components/CreateParty";
+import NavigationBar from "./components/NavigationBar";
 
 class App extends Component {
   state = {
+    value: "",
     message: ""
   };
 
@@ -21,12 +18,18 @@ class App extends Component {
       message: "Waiting for blockchain transaction to complete..."
     });
 
+    // await consent.methods.createParty(this.state.value).send({
+    //   from: accounts[0]
+    // });
+    //
+    // this.setState({message: "Your party has been registered!"});
   };
 
   render() {
     return (
         <Container>
-          <TopBar />
+          <NavigationBar />
+
           <div>
             <Card.Group>
               <Card color="blue" header="Register to Play">
@@ -38,7 +41,6 @@ class App extends Component {
                 </Card.Content>
               </Card>
             </Card.Group>
-
           </div>
 
         </Container>
@@ -57,4 +59,4 @@ export default App;
                   <Unregister />
                 </Card.Content>
               </Card>
-              */
+ */
