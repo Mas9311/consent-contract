@@ -3,12 +3,15 @@ import { Container, Card } from "semantic-ui-react";
 import web3 from "./web3";
 // import consent from "./consent";
 import CreateParty from "./components/CreateParty";
+import CreateAccount from "./components/CreateAccount";
+
 import NavigationBar from "./components/NavigationBar";
 
 class App extends Component {
   state = {
     value: "",
-    message: ""
+    message: "",
+    userAddress: ""
   };
 
   onSubmit = async event => {
@@ -29,15 +32,23 @@ class App extends Component {
     return (
         <Container>
           <NavigationBar />
-
+          <div></div>
           <div>
             <Card.Group>
-              <Card color="blue" header="Register to Play">
+              <Card color="blue" header="Register to Play" centered="true">
                 <Card.Content>
                   <h4>
                     Create a party and invite others.
                   </h4>
                   <CreateParty />
+                </Card.Content>
+              </Card>
+              <Card color="orange" header="Sign Up" centered="true">
+                <Card.Content>
+                  <h4>
+                    Create an account.
+                  </h4>
+                  <CreateAccount />
                 </Card.Content>
               </Card>
             </Card.Group>
