@@ -80,7 +80,7 @@ class CreateAccount extends Component {
             <Message error header="Oops!" content={this.state.error} />
             <Button primary type="submit" loading={this.state.loading}>
               <Icon name="check" />
-              Open the party!
+              Create Your Account!
             </Button>
             <hr />
             <h2>{this.state.firstName} {this.state.lastName}</h2>

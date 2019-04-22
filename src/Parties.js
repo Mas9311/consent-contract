@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import web3 from "./web3";
+import { Container, Card } from "semantic-ui-react";
 import consent from "./consent";
 
 
@@ -16,12 +17,12 @@ class Parties extends Component {
     for(party in this.state.parties) {
       partyCard.push(<Card color="blue" header= centered="true"><Card.Content>
         <h4>
-          Create a party and invite others.
+          {party}
         </h4>
-        <CreateParty />
       </Card.Content>
       </Card>);
     }
+    return (<Card.Group> partyCard </Card.Group>)
   }
 
   getParties = async () => {
@@ -34,7 +35,7 @@ class Parties extends Component {
     return (
       <Container>
         <div>
-          {constructParties}
+          {this.constructParties()}
         </div>
       </Container>
     );

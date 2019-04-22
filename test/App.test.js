@@ -23,3 +23,10 @@ beforeEach(async () => {
       .deploy({ data: compiledConsentContract.bytecode })
       .send({ from: accounts[0], gas: "3000000" });
 });
+
+describe("Trojan Secret Contract", () => {
+
+  it("consent contract can be deployed", () => {
+    assert.ok(consentContract.options.address);
+  });
+});
