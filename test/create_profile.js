@@ -1,6 +1,4 @@
-const truffleAssert = require('truffle-assertions');
-
-var ConsentContract = artifacts.require("./ConsentContract.sol");
+var ConsentContract = artifacts.require("ConsentContract.sol");
 
 contract('ConsentContract:createProfile', function(accounts) {
 
