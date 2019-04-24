@@ -1,4 +1,5 @@
 var ConsentContract = artifacts.require("ConsentContract.sol");
+const assert = require("assert");
 
 contract('ConsentContract:createParty', function(accounts) {
 
@@ -14,6 +15,25 @@ contract('ConsentContract:createParty', function(accounts) {
     let contract = await ConsentContract.deployed();
 
     await contract.createParty1B("AliceAndersonsParty_1b", 2, {gas: 500000, from: accounts[0]});
+  });
+
+  it("should fail to create a Party, party already created", async function() {
+    let contract = await ConsentContract.deployed();
+    try {
+      await contract.createParty1B("AliceAndersonsParty_1b", 2, {gas: 500000, from: accounts[1]});
+      assert(false)
+    } catch(err) {
+      assert(err)
+    }
+  });
+  it("should fail to create a Party, party name empty", async function() {
+    let contract = await ConsentContract.deployed();
+    try {
+      await contract.createParty1B("", 2, {gas: 500000, from: accounts[1]});
+      assert(false)
+    } catch(err) {
+      assert(err)
+    }
   });
 
 
