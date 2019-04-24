@@ -3,7 +3,6 @@ import { Button, Header, Icon, Modal, Form, Message } from "semantic-ui-react";
 import web3 from "../web3";
 import consent from "../consent";
 
-
 class CreateAccount extends Component {
   state = {
     modalOpen: false,
@@ -13,7 +12,13 @@ class CreateAccount extends Component {
     loading: false
   };
 
-  handleOpen = () => this.setState({ modalOpen: true, message: "", errorMessage: "" });
+  handleOpen = () => this.setState({
+    modalOpen: true,
+    firstName: "",
+    lastName: "",
+    message: "",
+    errorMessage: ""
+  });
 
   handleClose = () => this.setState({ modalOpen: false });
 
