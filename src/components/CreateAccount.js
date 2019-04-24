@@ -24,30 +24,60 @@ class CreateAccount extends Component {
 
   onSubmit = async event => {
     event.preventDefault();
-    if (!this.state.loading && this.state.firstName !== "" && this.state.lastName !== "") {
-      this.setState({
-        loading: true,
-        error: "",
-        message: "waiting for blockchain transaction to complete..."
-      });
-      try {
-        const accounts = await web3.eth.getAccounts();
-        await consent.methods
-            .createProfile(this.state.firstName, this.state.lastName) // contains the user account name
-            .send({
-              from: accounts[0]
+    const accounts = await web3.eth.getAccounts();
+    if (!this.state.loading) {
+      if (this.state.firstName !== "") {
+        if (this.state.lastName !== "") {
+          if (await consent.methods
+              .profileDoesNotExist()
+              .call({
+                from: accounts[0]
+              })) {
+            this.setState({
+              loading: true,
+              error: "",
+              message: "waiting for blockchain transaction to complete..."
             });
+            try {
+              await consent.methods
+                  .createProfile(this.state.firstName, this.state.lastName) // stores the user's first and last name
+                  .send({
+                    from: accounts[0]
+                  })
+                  .on('confirmation', (confirmationNumber, receipt) => {
+                    this.setState({
+                      loading: false,
+                      firstName: "",
+                      lastName: "",
+                      message: "Success: Your account has been created."
+                    })
+                  });
+            } catch (err) {
+              this.setState({
+                loading: false,
+                errorMessage: err.message,
+                message: "Error: Transaction rejected."
+              });
+            }
+          } else {
+            this.setState({
+              message: "You have already created an account and cannot create another."
+            });
+          }
+        } else {
+          this.setState({
+            message: "Please enter your last name into the correct field."
+          });
+        }
+      } else {
         this.setState({
-          loading: false,
-          message: "Your account has been created!"
-        });
-      } catch (err) {
-        this.setState({
-          loading: false,
-          errorMessage: err.message,
-          message: "Error: Transaction rejected. You already made an account or first and last name cannot be empty."
+          message: "Please enter your first name into the correct field."
         });
       }
+    } else {
+      this.setState({
+        message: "Sorry for the delay, the transaction is still processing."
+      });
     }
   };
 
