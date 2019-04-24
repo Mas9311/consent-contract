@@ -20,9 +20,15 @@
 
 // const HDWalletProvider = require('truffle-hdwallet-provider');
 // const infuraKey = "fj4jll3k.....";
-//
+
 // const fs = require('fs');
 // const mnemonic = fs.readFileSync(".secret").toString().trim();
+
+// let provider = new HDWalletProvider(
+//     "Not showing you my real metamask seed",
+//     "https://rinkeby.infura.io/v3/d1cdcb7554f04c26834022596f536529", // real infura
+//     0
+// );
 
 module.exports = {
   /**
@@ -35,7 +41,7 @@ module.exports = {
    * $ truffle test --network <network-name>
    */
   contracts_directory: "./ethereum/contracts",
-  contracts_build_directory: "./ethereum/build",
+  contracts_build_directory: "./src/compiled",
 
   networks: {
     // Useful for testing. The `development` name is special - truffle uses it by default
@@ -49,6 +55,14 @@ module.exports = {
      port: 8545,            // Standard Ethereum port (default: none)
      network_id: "*",       // Any network (default: none)
     },
+
+    // rinkeby: {
+    //   host: "localhost", // Connect to geth on the specified
+    //   port: 8545,
+    //   from: "0xFA8A250122B81a115acD4e27591540dD6242715b",
+    //   network_id: "*",
+    //   gas: 3154206 // Gas limit used for deploys
+    // }
 
     // Another network with more advanced options...
     // advanced: {
@@ -88,7 +102,7 @@ module.exports = {
   // Configure your compilers
   compilers: {
     solc: {
-      version: "^0.5.7",    // Fetch exact version from solc-bin (default: truffle's version)
+      version: "0.5.7",    // Fetch exact version from solc-bin (default: truffle's version)
       // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
       // settings: {          // See the solidity docs for advice about optimization and evmVersion
       //  optimizer: {

@@ -1,29 +1,55 @@
 import React, { Component } from "react";
-import Button from "semantic-ui-react/dist/commonjs/elements/Button";
-import Header from "semantic-ui-react/dist/commonjs/elements/Header";
-import Modal from "semantic-ui-react/dist/commonjs/modules/Modal";
-import Form from "semantic-ui-react/dist/commonjs/collections/Form";
-import Message from "semantic-ui-react/dist/commonjs/collections/Message";
-import Icon from "semantic-ui-react/dist/commonjs/elements/Icon";
+import { Button, Header, Icon, Modal, Form, Message } from "semantic-ui-react";
+import web3 from "../web3";
+import consent from "../consent";
+// let consent = async function() =>{ await ConsentContract["abi"] };
 
 class CreateParty extends Component {
     state = {
         modalOpen: false,
-        creator: "",
         partyName: "",
-        error: "",
+        errorMessage: "",
         loading: false
     };
 
-    handleOpen = () => this.setState({ modalOpen: true });
+    handleOpen = () => this.setState({ modalOpen: true, message: "", errorMessage: "" });
 
     handleClose = () => this.setState({ modalOpen: false });
+
+    onSubmit = async event => {
+        if (!this.state.loading && this.state.value !== "") {
+            event.preventDefault();
+            this.setState({
+                loading: true,
+                errorMessage: "",
+                message: "waiting for blockchain transaction to complete..."
+            });
+            try {
+                const accounts = await web3.eth.getAccounts();
+                await consent.methods
+                    .createParty(this.state.partyName) // contains the user account name
+                    .send({
+                        from: accounts[0]
+                    });
+                this.setState({
+                    loading: false,
+                    message: "You have been created a new Party"
+                });
+            } catch (err) {
+                this.setState({
+                    loading: false,
+                    errorMessage: err.message,
+                    message: "Rejected transaction, please try another name."
+                });
+            }
+        }
+    };
 
     render() {
         return (
             <Modal
                 trigger={
-                    <Button  color="green" onClick={this.handleOpen}>
+                    <Button color="green" onClick={this.handleOpen}>
                         Create a New Party
                     </Button>
                 }
@@ -32,28 +58,24 @@ class CreateParty extends Component {
             >
                 <Header icon="browser" content="Create a New Party" />
                 <Modal.Content>
-                    <Form onSubmit={this.onSubmit} error={!!this.state.error}>
-                        <Form.Field>
-                            <label>Creator</label>
-                            <input
-                                placeholder="Creator"
-                                onChange={event => this.setState({ creator: event.target.value })}
-                            />
-                        </Form.Field>
+                    <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage}>
                         <Form.Field>
                             <label>Your Party Name</label>
                             <input
                                 placeholder="Party Name"
-                                onChange={event => this.setState({ partyName: event.target.value })}
+                                onChange={event =>
+                                    this.setState({
+                                        partyName: event.target.value
+                                    })}
                             />
                         </Form.Field>
-                        <Message error header="Oops!" content={this.state.error} />
+                        <Message error header="Oops!" content={this.state.errorMessage} />
                         <Button primary type="submit" loading={this.state.loading}>
                             <Icon name="check" />
                             Open the party!
                         </Button>
                         <hr />
-                        <h2>{this.state.partyName}</h2>
+                        <h2>{this.state.message}</h2>
                     </Form>
                 </Modal.Content>
                 <Modal.Actions>
