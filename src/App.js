@@ -32,11 +32,10 @@ class App extends Component {
     return (
         <Container>
           <NavigationBar />
-          <div></div>
           <div>
-            <Card.Group>
+            <Card.Group itemsPerRow={2} stackable={true}>
 
-              <Card color="green" header="Sign Up" centered="true">
+              <Card fluid color="green" header="Sign Up" centered="true" raised="false">
                 <Card.Content>
                   <h4>
                     Create an account.
@@ -44,7 +43,7 @@ class App extends Component {
                   <CreateAccount />
                 </Card.Content>
               </Card>
-              <Card color="purple" header="Register to Play" centered="true">
+              <Card fluid color="purple" header="Register to Play" centered="true">
                 <Card.Content>
                   <h4>
                     Create a party and invite others.
@@ -52,14 +51,17 @@ class App extends Component {
                   <CreateParty />
                 </Card.Content>
               </Card>
-              <Card color="orange" header="Add a guest" centered="true">
+
+            </Card.Group>
+            <Card.Group itemsPerRow={2} stackable={true}>
+              <Card fluid color="orange" header="Add a guest" centered="true">
                 <Card.Content>
                   <h4>
                     Add a guest to the party.
                   </h4>
                 </Card.Content>
               </Card>
-              <Card color="yellow" header="Finalize" centered="true">
+              <Card fluid color="yellow" header="Finalize" centered="true">
                 <Card.Content>
                   <h4>
                     Close the party.

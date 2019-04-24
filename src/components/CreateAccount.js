@@ -18,8 +18,8 @@ class CreateAccount extends Component {
   handleClose = () => this.setState({ modalOpen: false });
 
   onSubmit = async event => {
+    event.preventDefault();
     if (!this.state.loading && this.state.partyName !== "") {
-      event.preventDefault();
       this.setState({
         loading: true,
         error: "",
@@ -75,10 +75,11 @@ class CreateAccount extends Component {
               />
             </Form.Field>
             <Message error header="Oops!" content={this.state.error} />
-            <Button primary type="submit" loading={this.state.loading}>
+            <Button primary type="submit" loading={this.state.loading} centered={true}>
               <Icon name="check" />
               Create Your Account!
             </Button>
+
             <hr />
             <h2>{this.state.firstName + " " + this.state.lastName}</h2>
             <h2>{this.state.message}</h2>
