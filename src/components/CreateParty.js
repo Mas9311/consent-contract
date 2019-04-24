@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Button, Header, Icon, Modal, Form, Message } from "semantic-ui-react";
 import web3 from "../web3";
 import consent from "../consent";
-// let consent = async function() =>{ await ConsentContract["abi"] };
 
 class CreateParty extends Component {
     state = {
@@ -40,7 +39,7 @@ class CreateParty extends Component {
                 this.setState({
                     loading: false,
                     errorMessage: err.message,
-                    message: "Error: Transaction rejected"
+                    message: "Error: Transaction rejected."
                 });
             }
         }
@@ -50,7 +49,7 @@ class CreateParty extends Component {
         return (
             <Modal
                 trigger={
-                    <Button color="green" onClick={this.handleOpen}>
+                    <Button color="purple" onClick={this.handleOpen} inverted>
                         Create a New Party
                     </Button>
                 }
@@ -76,7 +75,8 @@ class CreateParty extends Component {
                             Open the party!
                         </Button>
                         <hr />
-                        <h2>{this.state.partyName + " " + this.state.message}</h2>
+                        <h2>{this.state.partyName}</h2>
+                        <h2>{this.state.message}</h2>
                     </Form>
                 </Modal.Content>
                 <Modal.Actions>

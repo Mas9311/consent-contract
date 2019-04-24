@@ -1,12 +1,7 @@
 import React, { Component } from "react";
-import Button from "semantic-ui-react/dist/commonjs/elements/Button";
-import Header from "semantic-ui-react/dist/commonjs/elements/Header";
-import Modal from "semantic-ui-react/dist/commonjs/modules/Modal";
-import Form from "semantic-ui-react/dist/commonjs/collections/Form";
-import Message from "semantic-ui-react/dist/commonjs/collections/Message";
-import Icon from "semantic-ui-react/dist/commonjs/elements/Icon";
-import web3 from "web3";
-// import consent from "./consent";
+import { Button, Header, Icon, Modal, Form, Message } from "semantic-ui-react";
+import web3 from "../web3";
+import consent from "../consent";
 
 
 class CreateAccount extends Component {
@@ -14,38 +9,40 @@ class CreateAccount extends Component {
     modalOpen: false,
     firstName: "",
     lastName: "",
-    partyName: "",
     error: "",
     loading: false
   };
-  handleOpen = () => this.setState({ modalOpen: true });
+
+  handleOpen = () => this.setState({ modalOpen: true, message: "", errorMessage: "" });
 
   handleClose = () => this.setState({ modalOpen: false });
 
   onSubmit = async event => {
-    event.preventDefault();
-    this.setState({
-      loading: true,
-      error: "",
-      message: "waiting for blockchain transaction to complete..."
-    });
-    try {
-      const accounts = await web3.eth.getAccounts();
-      // await consent.methods
-      //   .createProfile(this.state.firstName, this.state.lastName) // contains the user account name
-      //   .send({
-      //     from: accounts[0]
-      //   });
+    if (!this.state.loading && this.state.partyName !== "") {
+      event.preventDefault();
       this.setState({
-        loading: false,
-        message: "Your account has been created!"
+        loading: true,
+        error: "",
+        message: "waiting for blockchain transaction to complete..."
       });
-    } catch (err) {
-      this.setState({
-        loading: false,
-        errorMessage: err.message,
-        message: "User rejected account already exists or first and last name must be non empty."
-      });
+      try {
+        const accounts = await web3.eth.getAccounts();
+        await consent.methods
+            .createProfile(this.state.firstName, this.state.lastName) // contains the user account name
+            .send({
+              from: accounts[0]
+            });
+        this.setState({
+          loading: false,
+          message: "Your account has been created!"
+        });
+      } catch (err) {
+        this.setState({
+          loading: false,
+          errorMessage: err.message,
+          message: "Error: Transaction rejected. You already made an account or first and last name cannot be empty."
+        });
+      }
     }
   };
 
@@ -53,7 +50,7 @@ class CreateAccount extends Component {
     return (
       <Modal
         trigger={
-          <Button  color="green" onClick={this.handleOpen}>
+          <Button color="green" onClick={this.handleOpen} inverted>
             Create an Account
           </Button>
         }
@@ -83,7 +80,8 @@ class CreateAccount extends Component {
               Create Your Account!
             </Button>
             <hr />
-            <h2>{this.state.firstName} {this.state.lastName}</h2>
+            <h2>{this.state.firstName + " " + this.state.lastName}</h2>
+            <h2>{this.state.message}</h2>
           </Form>
         </Modal.Content>
         <Modal.Actions>
