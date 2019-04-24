@@ -24,7 +24,7 @@ class CreateAccount extends Component {
 
   onSubmit = async event => {
     event.preventDefault();
-    if (!this.state.loading && this.state.partyName !== "") {
+    if (!this.state.loading && this.state.firstName !== "" && this.state.lastName !== "") {
       this.setState({
         loading: true,
         error: "",
