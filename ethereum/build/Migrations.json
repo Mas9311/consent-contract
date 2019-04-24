@@ -22,15 +22,15 @@
       "type": "constructor"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.5.7+commit.6da8b019\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":true,\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/s/bach/d/under/msmith91/WebstormProjects/consent-contract/ethereum/contracts/Migrations.sol\":\"Migrations\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/s/bach/d/under/msmith91/WebstormProjects/consent-contract/ethereum/contracts/Migrations.sol\":{\"keccak256\":\"0x3f1ee3513942a49886f1d9da8b5c88898bcacaf246125f7cce5cb4698e5d773a\",\"urls\":[\"bzzr://b52b7fc2be65138078d4f62dff43c7007318b54ddd35dbc94900ed743d762d0d\"]}},\"version\":1}",
-  "bytecode": "0x608060405234801561001057600080fd5b50336000806101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff16021790555060e38061005f6000396000f3fe6080604052348015600f57600080fd5b50600436106045576000357c0100000000000000000000000000000000000000000000000000000000900480638da5cb5b14604a575b600080fd5b60506092565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff168156fea165627a7a72305820518585bc226de03ae4c7a167ade773f51995c70fe91fab99b513ed8598ef2f3b0029",
-  "deployedBytecode": "0x6080604052348015600f57600080fd5b50600436106045576000357c0100000000000000000000000000000000000000000000000000000000900480638da5cb5b14604a575b600080fd5b60506092565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff168156fea165627a7a72305820518585bc226de03ae4c7a167ade773f51995c70fe91fab99b513ed8598ef2f3b0029",
+  "metadata": "{\"compiler\":{\"version\":\"0.5.7+commit.6da8b019\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":true,\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/s/bach/g/under/evanjs/Documents/Senior/CS481A3/consent-contract/ethereum/contracts/Migrations.sol\":\"Migrations\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/s/bach/g/under/evanjs/Documents/Senior/CS481A3/consent-contract/ethereum/contracts/Migrations.sol\":{\"keccak256\":\"0x3f1ee3513942a49886f1d9da8b5c88898bcacaf246125f7cce5cb4698e5d773a\",\"urls\":[\"bzzr://b52b7fc2be65138078d4f62dff43c7007318b54ddd35dbc94900ed743d762d0d\"]}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b50336000806101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff16021790555060e38061005f6000396000f3fe6080604052348015600f57600080fd5b50600436106045576000357c0100000000000000000000000000000000000000000000000000000000900480638da5cb5b14604a575b600080fd5b60506092565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff168156fea165627a7a723058207c8e8778e944a01d4efef1655d8b9e65fc1596a3cca018968df73b728acac2010029",
+  "deployedBytecode": "0x6080604052348015600f57600080fd5b50600436106045576000357c0100000000000000000000000000000000000000000000000000000000900480638da5cb5b14604a575b600080fd5b60506092565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff168156fea165627a7a723058207c8e8778e944a01d4efef1655d8b9e65fc1596a3cca018968df73b728acac2010029",
   "sourceMap": "25:101:1:-;;;74:50;8:9:-1;5:2;;;30:1;27;20:12;5:2;74:50:1;109:10;101:5;;:18;;;;;;;;;;;;;;;;;;25:101;;;;;;",
   "deployedSourceMap": "25:101:1:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;25:101:1;;;;;;;;;;;;;;;;;;;;49:20;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o",
   "source": "pragma solidity ^0.5.7;\n\ncontract Migrations {\n  address public owner;\n\n  constructor() public {\n    owner = msg.sender;\n  }\n}",
-  "sourcePath": "/s/bach/d/under/msmith91/WebstormProjects/consent-contract/ethereum/contracts/Migrations.sol",
+  "sourcePath": "/s/bach/g/under/evanjs/Documents/Senior/CS481A3/consent-contract/ethereum/contracts/Migrations.sol",
   "ast": {
-    "absolutePath": "/s/bach/d/under/msmith91/WebstormProjects/consent-contract/ethereum/contracts/Migrations.sol",
+    "absolutePath": "/s/bach/g/under/evanjs/Documents/Senior/CS481A3/consent-contract/ethereum/contracts/Migrations.sol",
     "exportedSymbols": {
       "Migrations": [
         682
@@ -193,7 +193,7 @@
     "src": "0:126:1"
   },
   "legacyAST": {
-    "absolutePath": "/s/bach/d/under/msmith91/WebstormProjects/consent-contract/ethereum/contracts/Migrations.sol",
+    "absolutePath": "/s/bach/g/under/evanjs/Documents/Senior/CS481A3/consent-contract/ethereum/contracts/Migrations.sol",
     "exportedSymbols": {
       "Migrations": [
         682
@@ -361,7 +361,7 @@
   },
   "networks": {},
   "schemaVersion": "3.0.6",
-  "updatedAt": "2019-04-23T21:17:35.411Z",
+  "updatedAt": "2019-04-24T15:46:06.786Z",
   "devdoc": {
     "methods": {}
   },
