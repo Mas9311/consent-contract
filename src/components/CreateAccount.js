@@ -8,10 +8,11 @@ class CreateAccount extends Component {
     modalOpen: false,
     firstName: "",
     lastName: "",
-    error: "",
+    errorMessage: "",
     loading: false
   };
 
+  // Upon opening the Create Account modal, clear everything to a clean slate.
   handleOpen = () => this.setState({
     modalOpen: true,
     firstName: "",
@@ -24,35 +25,37 @@ class CreateAccount extends Component {
 
   onSubmit = async event => {
     event.preventDefault();
-    const accounts = await web3.eth.getAccounts();
+    const currentAccount = await web3.eth.getAccounts()[0]; // retrieves the current metamask account.
+
     if (!this.state.loading) {
       if (this.state.firstName !== "") {
         if (this.state.lastName !== "") {
           if (await consent.methods
-              .profileDoesNotExist()
-              .call({
-                from: accounts[0]
-              })) {
+              .profileDoesNotExist() // The "modifier-function" that returns a boolean.
+              .call({ from: currentAccount })) {
+            // Only able to reach this point if the user has not created an account for their current metamask address.
             this.setState({
               loading: true,
-              error: "",
+              errorMessage: "",
               message: "waiting for blockchain transaction to complete..."
             });
             try {
               await consent.methods
-                  .createProfile(this.state.firstName, this.state.lastName) // stores the user's first and last name
+                  .createProfile(this.state.firstName, this.state.lastName) // stores the user's first and last name.
                   .send({
-                    from: accounts[0]
+                    from: currentAccount
                   })
                   .on('confirmation', (confirmationNumber, receipt) => {
+                    // Can only update this.state's first/last/message once the transaction has been approved.
                     this.setState({
                       loading: false,
-                      firstName: "",
-                      lastName: "",
-                      message: "Success: Your account has been created."
+                      firstName: "", // Clear the first name field so they don't click it again.
+                      lastName: "", // Clear the last name field.
+                      message: "Success: Your account has been created." // show the user the transaction was successful
                     })
                   });
             } catch (err) {
+              // User clicked the reject button in the metamask popup window.
               this.setState({
                 loading: false,
                 errorMessage: err.message,
@@ -60,21 +63,25 @@ class CreateAccount extends Component {
               });
             }
           } else {
+            // this is when the "modifier-function", profileDoesNotExist(), returns false.
             this.setState({
               message: "You have already created an account and cannot create another."
             });
           }
         } else {
+          // last name field is empty.
           this.setState({
             message: "Please enter your last name into the correct field."
           });
         }
       } else {
+        // first name field is empty.
         this.setState({
           message: "Please enter your first name into the correct field."
         });
       }
     } else {
+      // User clicked while loading icon is still spinning.
       this.setState({
         message: "Sorry for the delay, the transaction is still processing."
       });
@@ -94,7 +101,7 @@ class CreateAccount extends Component {
       >
         <Header icon="browser" content="Create an Account" />
         <Modal.Content>
-          <Form onSubmit={this.onSubmit} error={!!this.state.error}>
+          <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage}>
             <Form.Field>
               <label>First Name</label>
               <input
@@ -109,7 +116,7 @@ class CreateAccount extends Component {
                 onChange={event => this.setState({ lastName: event.target.value })}
               />
             </Form.Field>
-            <Message error header="Oops!" content={this.state.error} />
+            <Message error header="Oops!" content={this.state.errorMessage} />
             <Button primary type="submit" loading={this.state.loading} centered={true}>
               <Icon name="check" />
               Create Your Account!
