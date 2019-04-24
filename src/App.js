@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Container, Card } from "semantic-ui-react";
 import web3 from "./web3";
-// import consent from "./consent";
+import consent from "./consent";
+import { Container, Card } from "semantic-ui-react";
 import CreateParty from "./components/CreateParty";
 import CreateAccount from "./components/CreateAccount";
 
@@ -34,6 +34,7 @@ class App extends Component {
           <NavigationBar />
           <div></div>
           <div>
+
             <Card.Group>
               <Card color="blue" header="Register to Play" centered="true">
                 <Card.Content>
@@ -43,6 +44,7 @@ class App extends Component {
                   <CreateParty />
                 </Card.Content>
               </Card>
+
               <Card color="orange" header="Sign Up" centered="true">
                 <Card.Content>
                   <h4>
@@ -51,6 +53,7 @@ class App extends Component {
                   <CreateAccount />
                 </Card.Content>
               </Card>
+
             </Card.Group>
           </div>
 
