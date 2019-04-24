@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Container, Card } from "semantic-ui-react";
 import web3 from "./web3";
-// import consent from "./consent";
+import consent from "./consent";
+import { Container, Card } from "semantic-ui-react";
 import CreateParty from "./components/CreateParty";
 import NavigationBar from "./components/NavigationBar";
 
@@ -18,11 +18,11 @@ class App extends Component {
       message: "Waiting for blockchain transaction to complete..."
     });
 
-    // await consent.methods.createParty(this.state.value).send({
-    //   from: accounts[0]
-    // });
-    //
-    // this.setState({message: "Your party has been registered!"});
+    await consent.methods.createParty(this.state.value).send({
+      from: accounts[0]
+    });
+
+    this.setState({message: "Your party has been registered!"});
   };
 
   render() {
@@ -32,7 +32,8 @@ class App extends Component {
 
           <div>
             <Card.Group>
-              <Card color="blue" header="Register to Play">
+
+              <Card color="blue" header="Create a Party">
                 <Card.Content>
                   <h4>
                     Create a party and invite others.
@@ -40,6 +41,7 @@ class App extends Component {
                   <CreateParty />
                 </Card.Content>
               </Card>
+
             </Card.Group>
           </div>
 
@@ -51,7 +53,9 @@ class App extends Component {
 export default App;
 
 
-/* line 39
+/* line 32
+
+
               <Card color="red" header="">
                 <Card.Content>
                   <h4>We will surely miss you!</h4>
