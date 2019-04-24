@@ -10,16 +10,15 @@
     "react-scripts": "^3.0.0",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.86.0",
-    "solc": "^0.5.7",
+    "solc": "0.5.7",
     "truffle": "^5.0.13",
-    "truffle-assertions": "^0.8.2",
     "truffle-hdwallet-provider": "0.0.3",
     "web3": "^1.0.0-beta.52"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "mocha --timeout 10000",
+    "test": "mocha --timeout 4000",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
