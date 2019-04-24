@@ -52,4 +52,14 @@ contract('ConsentContract:addGuestToParty', function(accounts) {
       assert(err)
     }
   });
+
+  it("should fail to join createdParty, party does not exist", async function() {
+    let contract = await ConsentContract.deployed();
+    try {
+      await contract.addGuestToParty("The South", {gas: 500000, from: accounts[3]});
+      assert(false)
+    } catch(err) {
+      assert(err)
+    }
+  });
 });
