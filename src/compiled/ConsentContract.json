@@ -17048,10 +17048,16 @@
       "links": {},
       "address": "0x6c003bfEC0985695a3635D29317aFAe8ca8638c6",
       "transactionHash": "0xea50775097a3da10cee5c49f3fa53ecf1f022f86ee62f8bd5e4377a2bc5ec32f"
+    },
+    "1556137476274": {
+      "events": {},
+      "links": {},
+      "address": "0x5Abb0E6f86F35403E3D5707Ca7b40671D1fCC1cB",
+      "transactionHash": "0x690b9cd4b38aa398bbda16639c187fda859e4fe2e8ef7bca46d8b4c3a5965858"
     }
   },
   "schemaVersion": "3.0.6",
-  "updatedAt": "2019-04-24T15:21:47.257Z",
+  "updatedAt": "2019-04-24T20:24:44.726Z",
   "devdoc": {
     "author": "Michael Smith, Evan Steiner, Ezra Huston",
     "methods": {},
