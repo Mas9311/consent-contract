@@ -17,7 +17,7 @@ class CreateParty extends Component {
     handleClose = () => this.setState({ modalOpen: false });
 
     onSubmit = async event => {
-        if (!this.state.loading && this.state.value !== "") {
+        if (!this.state.loading && this.state.partyName !== "") {
             event.preventDefault();
             this.setState({
                 loading: true,
@@ -25,9 +25,10 @@ class CreateParty extends Component {
                 message: "waiting for blockchain transaction to complete..."
             });
             try {
+                // console.log(consent.jsonInterface.getMethods());
                 const accounts = await web3.eth.getAccounts();
                 await consent.methods
-                    .createParty(this.state.partyName) // contains the user account name
+                    .createParty1A(this.state.partyName) // contains the user account name
                     .send({
                         from: accounts[0]
                     });
@@ -39,7 +40,7 @@ class CreateParty extends Component {
                 this.setState({
                     loading: false,
                     errorMessage: err.message,
-                    message: "Rejected transaction, please try another name."
+                    message: "Error: Transaction rejected"
                 });
             }
         }
@@ -75,7 +76,7 @@ class CreateParty extends Component {
                             Open the party!
                         </Button>
                         <hr />
-                        <h2>{this.state.message}</h2>
+                        <h2>{this.state.partyName + " " + this.state.message}</h2>
                     </Form>
                 </Modal.Content>
                 <Modal.Actions>
