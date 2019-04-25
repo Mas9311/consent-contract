@@ -1,52 +1,92 @@
-var ConsentContract = artifacts.require("ConsentContract.sol");
+const ConsentContract = artifacts.require("ConsentContract.sol");
 const assert = require("assert");
+let consent;
 
 contract('ConsentContract:createParty', function(accounts) {
 
-  /** Success-result tests */
+  before("Creates the deployed contract instance", async function () {
+    // console.log("Only creates one instance of deployed Consent Contract");
+    consent = await ConsentContract.deployed();
 
-  it("should create a Party (1a)", async function() {
-    let contract = await ConsentContract.deployed();
-    await contract.createProfile("Alice", "Anderson", {gas: 100000, from: accounts[0]});
-    await contract.createParty1A("AliceAndersonsParty_1a", {gas: 500000, from: accounts[0]});
+    await consent.createProfile("Alice", "Anderson", {from: accounts[0]});
   });
 
-  it("should create a Party with maxNumber of Guests (1b)", async function() {
-    let contract = await ConsentContract.deployed();
-
-    await contract.createParty1B("AliceAndersonsParty_1b", 2, {gas: 500000, from: accounts[0]});
-  });
-
-  it("should fail to create a Party, party already created", async function() {
-    let contract = await ConsentContract.deployed();
+  it("should create a Party -- 1A", async function () {
     try {
-      await contract.createParty1B("AliceAndersonsParty_1b", 2, {gas: 500000, from: accounts[1]});
-      assert(false)
-    } catch(err) {
-      assert(err)
-    }
-  });
-  it("should fail to create a Party, party name empty", async function() {
-    let contract = await ConsentContract.deployed();
-    try {
-      await contract.createParty1B("", 2, {gas: 500000, from: accounts[1]});
-      assert(false)
-    } catch(err) {
-      assert(err)
+      await consent.createParty1A("Default 1A", {from: accounts[0]})
+    } catch (err) {
+      assert(false);
     }
   });
 
+  it("should create a Party -- 1B time limit", async function () {
+    try {
+      await consent.createParty1B("Max Guests 1B", 1, {from: accounts[0]})
+    } catch (err) {
+      assert(false);
+    }
+  });
 
-  /** Failure-result tests */
-  //Uncomment the following tests (one by one) and they should fail. If they don't, there is a bug!
+  it("should create a Party -- 1C max number of guests", async function () {
+    try {
+      await consent.createParty1C("Time Limit 1C", 5, {from: accounts[0]})
+    } catch (err) {
+      assert(false);
+    }
+  });
 
-  // it("should not allow the creation of a Party with an existing name", async function() {
-  //   let contract = await ConsentContract.deployed();
-  //
-  //   await contract.createProfile("Alice", "Anderson", {gas: 100000, from: accounts[0]});
-  //   await contract.createParty("AliceAndersonsParty", {gas: 500000, from: accounts[0]});
-  //
-  //   await contract.createParty("AliceAndersonsParty", {gas: 500000, from: accounts[0]});
-  // });
+  it("should create a Party -- 1D time limit + max number of guests", async function () {
+    try {
+      await consent.createParty1D("Max Guests + Time Limit 1D", 1, 5, {from: accounts[0]})
+    } catch (err) {
+      assert(false);
+    }
+  });
+
+  // tests the profileExistsModifier
+  it("should fail to create a Party, no existing profile", async function () {
+    try {
+      await consent.createParty1A("No Account", {from: accounts[9]});
+      assert(false)
+    } catch (err) {
+      // console.log(err.toString());
+      assert.strictEqual(
+          err.toString(),
+          "Error: Returned error: VM Exception while processing transaction: revert " +
+          "You must first create a profile -- Reason given: You must first create a profile."
+      )
+    }
+  });
+
+  // tests the notStringEmptyModifier
+  it("should fail to create a Party, party name empty", async function () {
+    try {
+      await consent.createParty1A("", {from: accounts[0]});
+      assert(false)
+    } catch (err) {
+      // console.log(err.toString());
+      assert.strictEqual(
+          err.toString(),
+          "Error: Returned error: VM Exception while processing transaction: revert " +
+          "String cannot be empty -- Reason given: String cannot be empty."
+      )
+    }
+  });
+
+  // tests the partyDoesNotExistModifier
+  it("should fail to create a Party, party already created", async function () {
+    try {
+      await consent.createParty1A("Default 1A", {from: accounts[0]});
+      assert(false)
+    } catch (err) {
+      // console.log(err.toString());
+      assert.strictEqual(
+          err.toString(),
+          "Error: Returned error: VM Exception while processing transaction: revert " +
+          "Party is already created -- Reason given: Party is already created."
+      )
+    }
+  });
+
 
 });
