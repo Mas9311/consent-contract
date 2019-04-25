@@ -17,7 +17,7 @@ class CreateAccount extends Component {
     modalOpen: true,
     firstName: "",
     lastName: "",
-    message: "",
+    message: "Please enter your first and last name to create an account.",
     errorMessage: ""
   });
 
@@ -25,7 +25,8 @@ class CreateAccount extends Component {
 
   onSubmit = async event => {
     event.preventDefault();
-    const currentAccount = await web3.eth.getAccounts()[0]; // retrieves the current metamask account.
+    const accounts = await web3.eth.getAccounts(); // retrieves the current metamask account.
+    let currentAccount = accounts[0];
 
     if (!this.state.loading) {
       if (this.state.firstName !== "") {
@@ -52,8 +53,10 @@ class CreateAccount extends Component {
                       firstName: "", // Clear the first name field so they don't click it again.
                       lastName: "", // Clear the last name field.
                       message: "Success: Your account has been created." // show the user the transaction was successful
-                    })
+                      })
                   });
+              document.getElementById('first_input').value = "";
+              document.getElementById('last_input').value = "";
             } catch (err) {
               // User clicked the reject button in the metamask popup window.
               this.setState({
@@ -65,8 +68,12 @@ class CreateAccount extends Component {
           } else {
             // this is when the "modifier-function", profileDoesNotExist(), returns false.
             this.setState({
+              firstName: "", // Clear the first name field so they don't click it again.
+              lastName: "", // Clear the last name field.
               message: "You have already created an account and cannot create another."
             });
+            document.getElementById('first_input').value = "";
+            document.getElementById('last_input').value = "";
           }
         } else {
           // last name field is empty.
@@ -104,14 +111,14 @@ class CreateAccount extends Component {
           <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage}>
             <Form.Field>
               <label>First Name</label>
-              <input
+              <input id="first_input"
                 placeholder="First Name"
                 onChange={event => this.setState({ firstName: event.target.value })}
               />
             </Form.Field>
             <Form.Field>
               <label>Last Name</label>
-              <input
+              <input id="last_input"
                 placeholder="Last Name"
                 onChange={event => this.setState({ lastName: event.target.value })}
               />
@@ -123,7 +130,7 @@ class CreateAccount extends Component {
             </Button>
 
             <hr />
-            <h2>{this.state.firstName + " " + this.state.lastName}</h2>
+            <h2>{this.state.firstName} {this.state.lastName}</h2>
             <h2>{this.state.message}</h2>
           </Form>
         </Modal.Content>
