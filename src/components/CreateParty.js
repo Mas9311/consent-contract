@@ -13,12 +13,13 @@ class CreateParty extends Component {
     loading: false
   };
 
+  //Upon opening the Create Party modal, clear everything to a clean slate.
   handleOpen = () => this.setState({
     modalOpen: true,
     partyName: "",
     maxNumberOfGuests: "",
     timeLimit: "",
-    message: "",
+    message: "Please enter your party name, maximum number of guests(optional), and a time limit(optional)",
     errorMessage: ""
   });
 
@@ -26,86 +27,114 @@ class CreateParty extends Component {
 
   onSubmit = async event => {
     event.preventDefault();
-    if (!this.state.loading && this.state.partyName !== "") {
-      this.setState({
-        loading: true,
-        errorMessage: "",
-        message: "waiting for blockchain transaction to complete..."
-      });
-      try {
-        // console.log(consent.jsonInterface.getMethods());
-        const accounts = await web3.eth.getAccounts();
+	const accounts = await web3.eth.getAccounts(); // retrieves the current metamask account.
+    let currentAccount = accounts[0];
+	
+    if (!this.state.loading) {
+	  if (this.state.partyName !== ""){
+		  if (await consent.methods.partyDoesNotExist(this.state.partyName).call({ from: currentAccount })){
+		  
+		  this.setState({
+			loading: true,
+			errorMessage: "",
+			message: "waiting for blockchain transaction to complete..."
+		  });
+		  try {
+			// console.log(consent.jsonInterface.getMethods());
+			const accounts = await web3.eth.getAccounts();
 
-        // No max number of guests specified.
-        // No time limit specified.
-        if (this.state.maxNumberOfGuests === "" && this.state.timeLimit === "") {
-          await consent.methods
-              .createParty1A(this.state.partyName)
-              .send({
-                from: accounts[0]
-              });
-          this.setState({
-            loading: false,
-            message: "Transaction approved. Party name: " + this.state.partyName +
-                " without a maximum number of guests " +
-                " that will close in 5 minutes."
-          });
-        }
+			// No max number of guests specified.
+			// No time limit specified.
+			if (this.state.maxNumberOfGuests === "" && this.state.timeLimit === "") {
+			  await consent.methods
+				  .createParty1A(this.state.partyName)
+				  .send({
+					from: accounts[0]
+				  });
+			  this.setState({
+				loading: false,
+				message: "Transaction approved. Party name: " + this.state.partyName +
+					" without a maximum number of guests " +
+					" that will close in 5 minutes."
+			  });
+			}
 
-        // No max number of guests specified.
-        // Time limit is specified.
-        else if (this.state.maxNumberOfGuests === "" && this.state.timeLimit !== "") {
-          await consent.methods
-              .createParty1B(this.state.partyName, this.state.timeLimit)
-              .send({
-                from: accounts[0]
-              });
-          this.setState({
-            loading: false,
-            message: "Transaction approved. Party name: " + this.state.partyName +
-                " without a maximum number of guests " +
-                " that will close in " + this.state.timeLimit + " minutes."
-          });
-        }
+			// No max number of guests specified.
+			// Time limit is specified.
+			else if (this.state.maxNumberOfGuests === "" && this.state.timeLimit !== "") {
+			  await consent.methods
+				  .createParty1B(this.state.partyName, this.state.timeLimit)
+				  .send({
+					from: accounts[0]
+				  });
+			  this.setState({
+				loading: false,
+				message: "Transaction approved. Party name: " + this.state.partyName +
+					" without a maximum number of guests " +
+					" that will close in " + this.state.timeLimit + " minutes."
+			  });
+			}
 
-        // Max number of guests is specified.
-        // No time limit specified.
-        else if (this.state.maxNumberOfGuests !== "" && this.state.timeLimit === "") {
-          await consent.methods
-              .createParty1C(this.state.partyName, this.state.maxNumberOfGuests)
-              .send({
-                from: accounts[0]
-              });
-          this.setState({
-            loading: false,
-            message: "Transaction approved. Party name: " + this.state.partyName +
-                " with a maximum number of " + this.state.maxNumberOfGuests+ " guests " +
-                " that will close in 5 minutes."
-          });
-        }
+			// Max number of guests is specified.
+			// No time limit specified.
+			else if (this.state.maxNumberOfGuests !== "" && this.state.timeLimit === "") {
+			  await consent.methods
+				  .createParty1C(this.state.partyName, this.state.maxNumberOfGuests)
+				  .send({
+					from: accounts[0]
+				  });
+			  this.setState({
+				loading: false,
+				message: "Transaction approved. Party name: " + this.state.partyName +
+					" with a maximum number of " + this.state.maxNumberOfGuests+ " guests " +
+					" that will close in 5 minutes."
+			  });
+			}
 
-        // Max number of guests is specified.
-        // Time limit is specified.
-        else if (this.state.maxNumberOfGuests !== "" && this.state.timeLimit !== "") {
-          await consent.methods
-              .createParty1D(this.state.partyName, this.state.timeLimit, this.state.maxNumberOfGuests)
-              .send({
-                from: accounts[0]
-              });
-          this.setState({
-            loading: false,
-            message: "Transaction approved. Party name: " + this.state.partyName +
-                " with a maximum number of " + this.state.maxNumberOfGuests+ " guests " +
-                " that will close in " + this.state.timeLimit + " minutes."
-          });
-        }
-      } catch (err) {
+			// Max number of guests is specified.
+			// Time limit is specified.
+			else if (this.state.maxNumberOfGuests !== "" && this.state.timeLimit !== "") {
+			  await consent.methods
+				  .createParty1D(this.state.partyName, this.state.timeLimit, this.state.maxNumberOfGuests)
+				  .send({
+					from: accounts[0]
+				  });
+			  this.setState({
+				loading: false,
+				message: "Transaction approved. Party name: " + this.state.partyName +
+					" with a maximum number of " + this.state.maxNumberOfGuests+ " guests " +
+					" that will close in " + this.state.timeLimit + " minutes."
+			  });
+			}
+		  } catch (err) {
+			this.setState({
+			  loading: false,
+			  errorMessage: err.message,
+			  message: "Error: Transaction rejected."
+			});
+		  }
+		  } else {
+			  this.setState({
+				partyName: "",
+				maxNumberOfGuests: "",
+				timeLimit: "",
+				message: "You have already created a party with that name.",
+				errorMessage: ""
+			  });
+			  
+			  
+			  }
+	  } else {
+        // party name field is empty.
         this.setState({
-          loading: false,
-          errorMessage: err.message,
-          message: "Error: Transaction rejected."
+          message: "Please enter a name for your party into the correct field."
         });
       }
+    } else {
+      // User clicked while loading icon is still spinning.
+      this.setState({
+        message: "Sorry for the delay, the transaction is still processing."
+      });
     }
   };
 
