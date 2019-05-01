@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Button, Header, Icon, Modal, Form, Message } from "semantic-ui-react";
 import web3 from "../web3";
 import consent from "../consent";
+import Party from "../Party";
 
 class JoinParty extends Component {
   state = {
@@ -122,6 +123,7 @@ class JoinParty extends Component {
         open={this.state.modalOpen}
         onClose={this.handleClose}
       >
+
         <Header icon="browser" content="Join a Party" />
         <Modal.Content>
           <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage}>
