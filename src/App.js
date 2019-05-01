@@ -6,6 +6,7 @@ import CreateParty from "./components/CreateParty";
 import CreateAccount from "./components/CreateAccount";
 
 import NavigationBar from "./components/NavigationBar";
+import JoinParty from "./components/JoinParty";
 
 class App extends Component {
   state = {
@@ -57,8 +58,9 @@ class App extends Component {
               <Card fluid color="orange" header="Add a guest" centered="true">
                 <Card.Content>
                   <h4>
-                    Add a guest to the party.
+                    Join the Party.
                   </h4>
+                  <JoinParty/>
                 </Card.Content>
               </Card>
               <Card fluid color="yellow" header="Finalize" centered="true">
