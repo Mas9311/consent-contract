@@ -2,7 +2,7 @@ pragma solidity ^0.5.7;
 
 /// @author Michael Smith, Evan Steiner, Ezra Huston
 /// @title A simple consent-saving contract
-// gas limit: minimum of 3148090 to deploy contract
+// gas limit: minimum of 2785133 to deploy contract
 contract ConsentContract {
 	enum ContractState { DoesNotExist, Initialized, Finalized }
 

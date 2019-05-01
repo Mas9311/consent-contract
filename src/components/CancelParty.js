@@ -7,6 +7,7 @@ class CancelParty extends Component {
   state = {
     modalOpen: false,
     partyName: "",
+    reason: "",
     errorMessage: "",
     loading: false
   };
@@ -20,7 +21,7 @@ class CancelParty extends Component {
     errorMessage: ""
   });
 
-  handleClose = () => this.setState({ modalOpen: false });
+  handleClose = () => this.setState({modalOpen: false});
 
   onSubmit = async event => {
     event.preventDefault();
@@ -29,137 +30,169 @@ class CancelParty extends Component {
     //console.log(currentAccount);
 
     if (!this.state.loading) {
-      if (this.state.partyName !== "" && this.state.reason !== "") {
-        if (await consent.methods
-            .profileDoesNotExist() // Profile must exist to cancel party
-            .call({
-              from: currentAccount
-            })) {
+      if (this.state.partyName !== "") {
+        if (this.state.reason !== "") {
+          if (await consent.methods
+              .profileDoesNotExist() // Profile must exist to cancel party
+              .call({
+                from: currentAccount
+              })) {
 
-          this.setState({
-            loading: false,
-            errorMessage: "Error: You cannot cancel a party without a profile",
-            message: ""
-          });
-        }
-        else if(await consent.methods
-            .partyDoesNotExist(this.state.partyName)
-            .call({from: currentAccount})) {
-          this.setState({
-            loading: false,
-            errorMessage: "Error: Party must exist to be cancelable",
-            message: ""
-          });
-        }
-        else if (!await consent.methods
-            .partyInitialized(this.state.partyName) // Party must exist to join it
-            .call({from: currentAccount})) {
+            this.setState({
+              loading: false,
+              errorMessage: "Error: You must create a profile before cancelling a Party.",
+              message: ""
+            });
+          } else if (await consent.methods
+              .partyDoesNotExist(this.state.partyName)
+              .call({
+                from: currentAccount
+              })) {
+            this.setState({
+              loading: false,
+              errorMessage: "Error: There is no Party by that name.",
+              message: ""
+            });
+          } else if (!await consent.methods
+              .partyInitialized(this.state.partyName) // Party must exist to join it
+              .call({
+                from: currentAccount
+              })) {
 
-          this.setState({
-            loading: false,
-            errorMessage: "Error: Party must not be closed to be cancelable",
-            message: ""
-          });
-        } else if (!await consent.methods
-            .partyOwner(this.state.partyName)
-            .call({from: currentAccount})) {
-          this.setState({
-            loading: false,
-            errorMessage: "Error: You cannot cancel a party you did not create",
-            message: ""
-          });
-        } else if(await  consent.methods
-            .partyFull(this.state.partyName)
-            .call({from: currentAccount})) {
-          this.setState({
-            loading: false,
-            errorMessage: "Error: Party is full, cannot cancel full party",
-            message: ""
-          })
-        } else if (await consent.methods
-            .partyHasExpired
-            .call({from: currentAccount})) {
-          this.setState({
-            loading: false,
-            errorMessage: "Error: This party has expired, no longer able to cancel",
-            message: ""
-          })
+            this.setState({
+              loading: false,
+              errorMessage: "Error: Party cannot be canceled if it is already finalized.",
+              message: ""
+            });
+          } else if (!await consent.methods
+              .partyOwner(this.state.partyName)
+              .call({
+                from: currentAccount
+              })) {
+            this.setState({
+              loading: false,
+              errorMessage: "Error: You must be the owner to cancel a Party.",
+              message: ""
+            });
+          } else if (await consent.methods
+              .partyFull(this.state.partyName)
+              .call({
+                from: currentAccount
+              })) {
+            this.setState({
+              loading: false,
+              errorMessage: "Error: Party is already full, therefore you cannot cancel the Party.",
+              message: ""
+            });
+          } else if (await consent.methods
+              .partyHasExpired(this.state.partyName)
+              .call({
+                from: currentAccount
+              })) {
+            this.setState({
+              loading: false,
+              errorMessage: "Error: This Party has expired, therefore you are not able to cancel.",
+              message: ""
+            });
+          } else {
+            this.setState({
+              loading: true,
+              errorMessage: "",
+              message: "waiting for blockchain transaction to complete..."
+            });
+            try {
+              await consent.methods.ownerCancels(
+                  this.state.partyName,
+                  this.state.reason
+              )
+                  .send({
+                    from: currentAccount
+                  })
+                  .on('confirmation', (confirmationNumber, receipt) => {
+                    this.setState({
+                      loading: false,
+                      partyName: "",
+                      reason: "",
+                      errorMessage: "",
+                      message: "Success: You have canceled the party." // show the user the transaction was successful
+                    });
+                    document.getElementById('party_name').value = "";
+                    document.getElementById('reason_cancel').value = "";
+                  });
+            } catch (err) {
+              // User clicked the reject button in the metamask popup window.
+              console.log(err.toString());
+              this.setState({
+                loading: false,
+                errorMessage: err.message,
+                message: "Error: Transaction rejected."
+              });
+            }
+          }
         } else {
           this.setState({
-            loading: true,
-            errorMessage: "",
-            message: "waiting for blockchain transaction to complete..."
+            message: "Please enter the reason for cancelling into the correct field."
           });
-          await consent.methods.addGuestToParty(this.state.partyName)
-            .call({from: currentAccount})
-            .on('confirmation', (confirmationNumber, receipt) => {
-              this.setState({
-                loading: true,
-                partyName: "",
-                errorMessage: "",
-                message: "Success: You have canceled the party" // show the user the transaction was successful
-              })
-            });
         }
       } else {
         this.setState({
-          message: "Must specify party to cancel and reason for cancelling" // show the user the transaction was successful
-        })
+          message: "Please enter a name for your Party into the correct field."
+        });
       }
     }
   };
 
   render() {
     return (
-      <Modal
-        trigger={
-          <Button color="red" onClick={this.handleOpen} inverted>
-            Cancel a Party
-          </Button>
-        }
-        open={this.state.modalOpen}
-        onClose={this.handleClose}
-      >
-        <Header icon="browser" content="Cancel a Party" />
-        <Modal.Content>
-          <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage}>
-            <Form.Field>
-              <label>Your Party Name</label>
-              <input
-                placeholder="Party Name"
-                onChange={event =>
-                  this.setState({
-                    partyName: event.target.value
-                  })}
-              />
-            </Form.Field>
-            <Form.Field>
-              <label>Your Party Name</label>
-              <input
-                placeholder="Reason for cancelling"
-                onChange={event =>
-                  this.setState({
-                    reason: event.target.value
-                  })}
-              />
-            </Form.Field>
+        <Modal
+            trigger={
+              <Button color="red" onClick={this.handleOpen} inverted>
+                Cancel a Party
+              </Button>
+            }
+            open={this.state.modalOpen}
+            onClose={this.handleClose}
+        >
+          <Header icon="browser" content="Cancel a Party"/>
+          <Modal.Content>
+            <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage}>
+              <Form.Field>
+                <label>Your Party Name</label>
+                <input id="party_name"
+                       placeholder="Party Name"
+                       onChange={event =>
+                           this.setState({
+                             partyName: event.target.value
+                           })}
+                />
+              </Form.Field>
+              <Form.Field>
+                <label>Your Party Name</label>
+                <input id="reason_cancel"
+                       placeholder="Reason for cancelling"
+                       onChange={event =>
+                           this.setState({
+                             reason: event.target.value
+                           })}
+                />
+              </Form.Field>
 
-            <Message error header="Oops!" content={this.state.errorMessage} />
-            <Button primary type="submit" loading={this.state.loading}>
-              <Icon name="check" />
-              Cancel a Party
+              <Message error header="Oops!" content={this.state.errorMessage}/>
+              <Button primary type="submit" loading={this.state.loading}>
+                <Icon name="check"/>
+                Cancel a Party
+              </Button>
+              <hr/>
+              <h2>{this.state.partyName}</h2>
+              <h2>{this.state.message}</h2>
+            </Form>
+          </Modal.Content>
+          <Modal.Actions>
+            <Button color="red" onClick={this.handleClose} inverted>
+              <Icon name="cancel"/> Close
             </Button>
-            <hr />
-            <h2>{this.state.partyName}</h2>
-            <h2>{this.state.message}</h2>
-          </Form>
-        </Modal.Content>
-        <Modal.Actions>
-          <Button color="red" onClick={this.handleClose} inverted>
-            <Icon name="cancel" /> Close
-          </Button>
-        </Modal.Actions>
-      </Modal>
+          </Modal.Actions>
+        </Modal>
     );
   }
 }

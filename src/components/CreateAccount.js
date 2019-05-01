@@ -21,7 +21,7 @@ class CreateAccount extends Component {
     errorMessage: ""
   });
 
-  handleClose = () => this.setState({ modalOpen: false });
+  handleClose = () => this.setState({modalOpen: false});
 
   onSubmit = async event => {
     event.preventDefault();
@@ -55,12 +55,13 @@ class CreateAccount extends Component {
                       firstName: "", // Clear the first name field so they don't click it again.
                       lastName: "", // Clear the last name field.
                       message: "Success: Your account has been created." // show the user the transaction was successful
-                      })
+                    });
+                    document.getElementById('first_input').value = "";
+                    document.getElementById('last_input').value = "";
                   });
-              document.getElementById('first_input').value = "";
-              document.getElementById('last_input').value = "";
             } catch (err) {
               // User clicked the reject button in the metamask popup window.
+              console.log(err.toString());
               this.setState({
                 loading: false,
                 errorMessage: err.message,
@@ -99,49 +100,49 @@ class CreateAccount extends Component {
 
   render() {
     return (
-      <Modal
-        trigger={
-          <Button color="green" onClick={this.handleOpen} inverted>
-            Create an Account
-          </Button>
-        }
-        open={this.state.modalOpen}
-        onClose={this.handleClose}
-      >
-        <Header icon="browser" content="Create an Account" />
-        <Modal.Content>
-          <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage}>
-            <Form.Field>
-              <label>First Name</label>
-              <input id="first_input"
-                placeholder="First Name"
-                onChange={event => this.setState({ firstName: event.target.value })}
-              />
-            </Form.Field>
-            <Form.Field>
-              <label>Last Name</label>
-              <input id="last_input"
-                placeholder="Last Name"
-                onChange={event => this.setState({ lastName: event.target.value })}
-              />
-            </Form.Field>
-            <Message error header="Oops!" content={this.state.errorMessage} />
-            <Button primary type="submit" loading={this.state.loading} centered={true}>
-              <Icon name="check" />
-              Create Your Account!
-            </Button>
+        <Modal
+            trigger={
+              <Button color="green" onClick={this.handleOpen} inverted>
+                Create an Account
+              </Button>
+            }
+            open={this.state.modalOpen}
+            onClose={this.handleClose}
+        >
+          <Header icon="browser" content="Create an Account"/>
+          <Modal.Content>
+            <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage}>
+              <Form.Field>
+                <label>First Name</label>
+                <input id="first_input"
+                       placeholder="First Name"
+                       onChange={event => this.setState({firstName: event.target.value})}
+                />
+              </Form.Field>
+              <Form.Field>
+                <label>Last Name</label>
+                <input id="last_input"
+                       placeholder="Last Name"
+                       onChange={event => this.setState({lastName: event.target.value})}
+                />
+              </Form.Field>
+              <Message error header="Oops!" content={this.state.errorMessage}/>
+              <Button primary type="submit" loading={this.state.loading} centered={true}>
+                <Icon name="check"/>
+                Create Your Account!
+              </Button>
 
-            <hr />
-            <h2>{this.state.firstName} {this.state.lastName}</h2>
-            <h2>{this.state.message}</h2>
-          </Form>
-        </Modal.Content>
-        <Modal.Actions>
-          <Button color="red" onClick={this.handleClose} inverted>
-            <Icon name="cancel" /> Close
-          </Button>
-        </Modal.Actions>
-      </Modal>
+              <hr/>
+              <h2>{this.state.firstName} {this.state.lastName}</h2>
+              <h2>{this.state.message}</h2>
+            </Form>
+          </Modal.Content>
+          <Modal.Actions>
+            <Button color="red" onClick={this.handleClose} inverted>
+              <Icon name="cancel"/> Close
+            </Button>
+          </Modal.Actions>
+        </Modal>
     );
   }
 }

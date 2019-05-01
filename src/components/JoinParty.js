@@ -110,10 +110,12 @@ class JoinParty extends Component {
                     partyName: "",
                     errorMessage: "",
                     message: "Success: You have joined the party" // show the user the transaction was successful
-                  })
+                  });
+                  document.getElementById('party_name').value = "";
                 });
           } catch (err) {
             // User clicked the reject button in the metamask popup window.
+            console.log(err.toString());
             this.setState({
               loading: false,
               errorMessage: err.message,
@@ -152,12 +154,12 @@ class JoinParty extends Component {
             <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage}>
               <Form.Field>
                 <label>Your Party Name</label>
-                <input
-                    placeholder="Party Name"
-                    onChange={event =>
-                        this.setState({
-                          partyName: event.target.value
-                        })}
+                <input id="party_name"
+                       placeholder="Party Name"
+                       onChange={event =>
+                           this.setState({
+                             partyName: event.target.value
+                           })}
                 />
               </Form.Field>
 

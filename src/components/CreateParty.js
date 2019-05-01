@@ -23,7 +23,7 @@ class CreateParty extends Component {
     errorMessage: ""
   });
 
-  handleClose = () => this.setState({ modalOpen: false });
+  handleClose = () => this.setState({modalOpen: false});
 
   onSubmit = async event => {
     event.preventDefault();
@@ -63,7 +63,8 @@ class CreateParty extends Component {
                       message: "Transaction approved. Party name: " + this.state.partyName +
                           " with a maximum number of 1 guest " +
                           " that will close in 5 minutes."
-                    })
+                    });
+                    document.getElementById('party_name').value = "";
                   });
             }
 
@@ -71,7 +72,10 @@ class CreateParty extends Component {
             // Time limit is specified.
             else if (this.state.maxNumberOfGuests === "" && this.state.timeLimit !== "") {
               await consent.methods
-                  .createParty1B(this.state.partyName, this.state.timeLimit)
+                  .createParty1B(
+                      this.state.partyName,
+                      this.state.timeLimit
+                  )
                   .send({
                     from: currentAccount
                   })
@@ -82,16 +86,20 @@ class CreateParty extends Component {
                       message: "Transaction approved. Party name: " + this.state.partyName +
                           " with a maximum number of 1 guest " +
                           " that will close in " + this.state.timeLimit + " minutes."
-                    })
+                    });
+                    document.getElementById('party_name').value = "";
+                    document.getElementById('time_limit').value = "";
                   });
-
             }
 
             // Max number of guests is specified.
             // No time limit specified.
             else if (this.state.maxNumberOfGuests !== "" && this.state.timeLimit === "") {
               await consent.methods
-                  .createParty1C(this.state.partyName, this.state.maxNumberOfGuests)
+                  .createParty1C(
+                      this.state.partyName,
+                      this.state.maxNumberOfGuests
+                  )
                   .send({
                     from: currentAccount
                   })
@@ -102,7 +110,9 @@ class CreateParty extends Component {
                       message: "Transaction approved. Party name: " + this.state.partyName +
                           " with a maximum number of " + this.state.maxNumberOfGuests + " guests " +
                           " that will close in 5 minutes."
-                    })
+                    });
+                    document.getElementById('party_name').value = "";
+                    document.getElementById('max_guests').value = "";
                   });
             }
 
@@ -110,7 +120,11 @@ class CreateParty extends Component {
             // Time limit is specified.
             else if (this.state.maxNumberOfGuests !== "" && this.state.timeLimit !== "") {
               await consent.methods
-                  .createParty1D(this.state.partyName, this.state.timeLimit, this.state.maxNumberOfGuests)
+                  .createParty1D(
+                      this.state.partyName,
+                      this.state.timeLimit,
+                      this.state.maxNumberOfGuests
+                  )
                   .send({
                     from: currentAccount
                   })
@@ -121,12 +135,16 @@ class CreateParty extends Component {
                       message: "Transaction approved. Party name: " + this.state.partyName +
                           " with a maximum number of " + this.state.maxNumberOfGuests + " guests " +
                           " that will close in " + this.state.timeLimit + " minutes."
-                    })
+                    });
+                    document.getElementById('party_name').value = "";
+                    document.getElementById('time_limit').value = "";
+                    document.getElementById('max_guests').value = "";
                   });
             }
           } catch (err) {
+            // User clicked the reject button in the metamask popup window.
+            console.log(err.toString());
             this.setState({
-              // User clicked the reject button in the metamask popup window.
               loading: false,
               errorMessage: err.message,
               message: "Error: Transaction rejected."
@@ -141,7 +159,6 @@ class CreateParty extends Component {
             message: "You have already created a party with that name.",
             errorMessage: ""
           });
-
         }
       } else {
         // party name field is empty.
@@ -168,12 +185,12 @@ class CreateParty extends Component {
             open={this.state.modalOpen}
             onClose={this.handleClose}
         >
-          <Header icon="browser" content="Create a New Party" />
+          <Header icon="browser" content="Create a New Party"/>
           <Modal.Content>
             <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage}>
               <Form.Field>
                 <label>Your Party Name</label>
-                <input
+                <input id="party_name"
                     placeholder="Party Name"
                     onChange={event =>
                         this.setState({
@@ -184,7 +201,7 @@ class CreateParty extends Component {
 
               <Form.Field>
                 <label>Maximum Guests permitted to join your party</label>
-                <input
+                <input id="max_guests"
                     placeholder="(optional) defaults to no limit"
                     onChange={event =>
                         this.setState({
@@ -195,7 +212,7 @@ class CreateParty extends Component {
 
               <Form.Field>
                 <label>Time Limit until the Party Closes (in minutes)</label>
-                <input
+                <input id="time_limit"
                     placeholder="(optional) defaults to 5 minutes"
                     onChange={event =>
                         this.setState({
@@ -204,19 +221,19 @@ class CreateParty extends Component {
                 />
               </Form.Field>
 
-              <Message error header="Oops!" content={this.state.errorMessage} />
+              <Message error header="Oops!" content={this.state.errorMessage}/>
               <Button primary type="submit" loading={this.state.loading}>
-                <Icon name="check" />
+                <Icon name="check"/>
                 Open the party!
               </Button>
-              <hr />
+              <hr/>
               <h2>{this.state.partyName}</h2>
               <h2>{this.state.message}</h2>
             </Form>
           </Modal.Content>
           <Modal.Actions>
             <Button color="red" onClick={this.handleClose} inverted>
-              <Icon name="cancel" /> Close
+              <Icon name="cancel"/> Close
             </Button>
           </Modal.Actions>
         </Modal>

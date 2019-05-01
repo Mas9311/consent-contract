@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-// import web3 from "./web3";
-// import consent from "./consent";
 import { Container, Card } from "semantic-ui-react";
 import CreateParty from "./components/CreateParty";
 import CreateAccount from "./components/CreateAccount";
@@ -10,11 +8,6 @@ import JoinParty from "./components/JoinParty";
 import CancelParty from "./components/CancelParty";
 
 class App extends Component {
-  state = {
-    value: "",
-    message: "",
-    parties: []
-  };
 
   render() {
     return (
@@ -36,7 +29,7 @@ class App extends Component {
                   <h4>
                     Create a party and invite others.
                   </h4>
-                  <CreateParty parties = {this.state.parties}/>
+                  <CreateParty />
                 </Card.Content>
               </Card>
 
@@ -47,7 +40,7 @@ class App extends Component {
                   <h4>
                     Join a party.
                   </h4>
-                  <JoinParty parties = {this.state.parties}/>
+                  <JoinParty />
                 </Card.Content>
               </Card>
               <Card fluid color="red" header="Finalize" centered="true">
@@ -55,7 +48,7 @@ class App extends Component {
                   <h4>
                     Cancel a party.
                   </h4>
-                  <CancelParty parties = {this.state.parties}/>
+                  <CancelParty />
                 </Card.Content>
               </Card>
 
