@@ -19,6 +19,7 @@ contract('ConsentContract:addGuestToParty', function(accounts) {
     try {
       await consent.createParty1C("The North", 2, {from: accounts[0]});
     } catch (err) {
+      // console.log(err.toString());
       assert.fail();
     }
   });
@@ -72,7 +73,7 @@ contract('ConsentContract:addGuestToParty', function(accounts) {
     try {
       await consent.addGuestToParty("The North", {from: accounts[1]});
     } catch (err) {
-      console.log(err);
+      // console.log(err.toString());
       assert.fail();
     }
   });
@@ -111,18 +112,18 @@ contract('ConsentContract:addGuestToParty', function(accounts) {
     try {
       await consent.addGuestToParty("The North", {from: accounts[2]});
     } catch (err) {
+      // console.log(err.toString());
       assert.fail();
     }
   });
 
-
-  // AH! A BUG!
-
+  // tests the partyInitializedModifier
   it("should fail to join createdParty, party full", async function () {
     try {
       await consent.addGuestToParty("The North", {from: accounts[3]});
       assert.fail();
     } catch (err) {
+      // console.log(err.toString());
       assert.strictEqual(
           err.toString(),
           "Error: Returned error: VM Exception while processing transaction: revert " +
@@ -130,4 +131,21 @@ contract('ConsentContract:addGuestToParty', function(accounts) {
       );
     }
   });
+
+  // tests the notPartyHasExpiredModifier
+  it("should fail due to party's expired time -- 1B time limit: 0; ", async function () {
+    try {
+      await consent.createParty1B("Already Expired", 0, {from: accounts[0]});
+      await consent.addGuestToParty("Already Expired", {from: accounts[1]});
+      assert.fail();
+    } catch (err) {
+      // console.log(err.toString());
+      assert.strictEqual(
+          err.toString(),
+          "Error: Returned error: VM Exception while processing transaction: revert " +
+          "Cannot join a party that has an expired time -- Reason given: Cannot join a party that has an expired time."
+      );
+    }
+  });
+
 });

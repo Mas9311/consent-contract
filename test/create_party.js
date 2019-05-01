@@ -15,6 +15,7 @@ contract('ConsentContract:createParty', function(accounts) {
     try {
       await consent.createParty1A("Default 1A", {from: accounts[0]});
     } catch (err) {
+      // console.log(err.toString());
       assert.fail();
     }
   });
@@ -23,6 +24,7 @@ contract('ConsentContract:createParty', function(accounts) {
     try {
       await consent.createParty1B("Max Guests 1B", 1, {from: accounts[0]});
     } catch (err) {
+      // console.log(err.toString());
       assert.fail();
     }
   });
@@ -31,6 +33,7 @@ contract('ConsentContract:createParty', function(accounts) {
     try {
       await consent.createParty1C("Time Limit 1C", 5, {from: accounts[0]});
     } catch (err) {
+      // console.log(err.toString());
       assert.fail();
     }
   });
@@ -39,6 +42,7 @@ contract('ConsentContract:createParty', function(accounts) {
     try {
       await consent.createParty1D("Max Guests + Time Limit 1D", 1, 5, {from: accounts[0]});
     } catch (err) {
+      // console.log(err.toString());
       assert.fail();
     }
   });
@@ -87,6 +91,5 @@ contract('ConsentContract:createParty', function(accounts) {
       );
     }
   });
-
 
 });
