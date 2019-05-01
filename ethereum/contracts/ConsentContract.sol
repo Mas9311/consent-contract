@@ -8,13 +8,14 @@ contract ConsentContract {
 
 	struct Party {
     	ContractState state;
-    	uint256 startTime;
     	address owner;
-    	uint256 maxUsersPermitted;
-    	mapping(uint256 => ConsentingUser) consentingUsers;
-    	uint256 guestsInParty;
-    	mapping(address => bool) added;
+    	uint256 startTime;
     	uint256 closeTime;
+    	uint256 maxGuestsPermitted;
+    	uint256 currentNumberOfGuests;
+    	mapping(uint256 => ConsentingUser) consentingUsers;
+    	mapping(address => bool) added;
+    	string reasonForCancel;
 	}
 
 	struct ConsentingUser {
@@ -104,6 +105,22 @@ contract ConsentContract {
     	_;
 	}
 
+	modifier notPartyHasExpiredModifier(string memory partyName) {
+	    require(
+            !partyHasExpired(partyName),
+        	"Cannot join a party that has an expired time"
+    	);
+    	_;
+	}
+
+	modifier partyNotFullModifier(string memory partyName) {
+	    require(
+            !partyFull(partyName),
+        	"No more guests can join the party"
+    	);
+    	_;
+	}
+
 	// Step 0.
 	//  Create a profile with:
 	//  - first name.
@@ -122,7 +139,7 @@ contract ConsentContract {
 	}
 
 	// Step 1a.
-	//   Alice creates the party with:
+	//   Alice creates the party (Initialized) with:
 	//   - default closeTime of 5 minutes.
 	//   - default maxGuests of 1.
 	function createParty1A(string memory partyName)
@@ -138,11 +155,11 @@ contract ConsentContract {
     	party1a.owner = msg.sender;
 
     	party1a.closeTime = party1a.startTime + 5 minutes; // now + 5 minutes
-    	party1a.maxUsersPermitted = 1;
+    	party1a.maxGuestsPermitted = 1;
 	}
 
 	// Step 1b.
-	//   Alice creates the party with:
+	//   Alice creates the party (Initialized) with:
 	//   - a specified closeTime of x (in minutes).
 	//   - default maxGuests of 1.
 	function createParty1B(string memory partyName, uint256 closeTimeInMinutes)
@@ -158,11 +175,11 @@ contract ConsentContract {
     	party1b.owner = msg.sender;
 
     	party1b.closeTime = party1b.startTime + (closeTimeInMinutes * 1 minutes); // now + x minutes.
-    	party1b.maxUsersPermitted = 1;
+    	party1b.maxGuestsPermitted = 1;
 	}
 
 	// Step 1c.
-	//  Alice creates the party with:
+	//  Alice creates the party (Initialized) with:
 	//  - default closeTime of 5 minutes.
 	//  - a max of y number of guests permitted.
 	function createParty1C(string memory partyName, uint256 maxNumberOfGuests)
@@ -178,11 +195,11 @@ contract ConsentContract {
     	party1c.owner = msg.sender;
 
     	party1c.closeTime = party1c.startTime + 5 minutes; // now + 5 minutes
-    	party1c.maxUsersPermitted = maxNumberOfGuests;
+    	party1c.maxGuestsPermitted = maxNumberOfGuests;
 	}
 
-	// Step 1d=(1b & 1c).
-	//  Alice creates the party with:
+	// Step 1d = (1b + 1c).
+	//  Alice creates the party (Initialized) with:
 	//  - a specified closeTime of x (in minutes).
 	//  - a max of y number of guests permitted.
 	function createParty1D(string memory partyName, uint256 closeTimeInMinutes, uint256 maxNumberOfGuests)
@@ -198,14 +215,17 @@ contract ConsentContract {
     	party1d.owner = msg.sender;
 
     	party1d.closeTime = party1d.startTime + (closeTimeInMinutes * 1 minutes);
-    	party1d.maxUsersPermitted = maxNumberOfGuests;
+    	party1d.maxGuestsPermitted = maxNumberOfGuests;
 	}
 
 	// Step 2.
-	//  Alice invites Bob to join the party by sending the partyName string.
+	//  Alice invites Bob (through a messaging app or by word of mouth)
+	//  to join the party by sending the partyName string.
 
 	// Step 3.
-	//  Bob joins the party (consents to party).
+	//  Bob joins the party (saves his consent to the party).
+	//  If (Bob joining now make the party full):
+	//  - Add Alice's consent and close the party (Finalized).
 	function addGuestToParty(string memory partyName)
     	public
     	profileExistsModifier
@@ -213,47 +233,49 @@ contract ConsentContract {
     	partyInitializedModifier(partyName)
     	notPartyOwnerModifier(partyName)
     	notYetAddedToPartyModifier(partyName)
+    	notPartyHasExpiredModifier(partyName)
 	{
     	Party storage party3 = parties[partyName];
-    	ConsentingUser storage guest = party3.consentingUsers[party3.guestsInParty++];
+    	ConsentingUser storage guest = party3.consentingUsers[party3.currentNumberOfGuests++];
 
     	guest.timeAdded = now;
     	guest.userAddress = msg.sender;
     	party3.added[msg.sender] = true;
+
+    	// Add the owner as a consenting guest in the party
+    	if (party3.currentNumberOfGuests == party3.maxGuestsPermitted) {
+    	    ConsentingUser storage ownerAsGuest = party3.consentingUsers[party3.currentNumberOfGuests++];
+
+    	    ownerAsGuest.timeAdded = now;
+    	    ownerAsGuest.userAddress = party3.owner;
+
+    	    party3.added[party3.owner] = true;
+    	    party3.state = ContractState.Finalized;
+    	    party3.closeTime = now;
+    	}
 	}
 
-	// Step 4a.
-	//  Alice consents to the party.
-	//  - party is finalized.
-	function ownerConsents(string memory partyName)
-    	public
-    	notStringEmptyModifier(partyName)
-    	partyInitializedModifier(partyName)
-    	partyOwnerModifier(partyName)
-	{
-	    Party storage party4 = parties[partyName];
-    	ConsentingUser storage partyCreator = party4.consentingUsers[party4.guestsInParty++];
-
-    	partyCreator.timeAdded = now;
-    	partyCreator.userAddress = msg.sender;
-
-    	party4.state = ContractState.Finalized;
-    	party4.closeTime = now;
-	}
-
-	// Step 4b.
+	// (OPTIONAL)
+	// Step 4.
 	//  Alice cancels her consent.
-	//  - party is finalized.
-	function ownerCancels(string memory partyName)
+	//  - close the party (Finalized).
+	// Alice can ONLY cancel the party:
+	//  - if (the maxNumberOfGuests is not at full-capacity)
+	//      and
+	//  - must give a reason to why they chose to cancel.
+	function ownerCancels(string memory partyName, string memory reason)
     	public
     	notStringEmptyModifier(partyName)
+    	notStringEmptyModifier(reason)
     	partyInitializedModifier(partyName)
     	partyOwnerModifier(partyName)
+    	partyNotFullModifier(partyName)
 	{
     	Party storage party4 = parties[partyName];
 
     	party4.state = ContractState.Finalized;
     	party4.closeTime = now;
+    	party4.reasonForCancel = reason;
 	}
 
 	function profileDoesNotExist()
@@ -300,6 +322,22 @@ contract ConsentContract {
 	    returns (bool)
 	{
 	    return (parties[partyName].added[msg.sender] != true);
+	}
+
+	function partyFull(string memory partyName)
+	    public
+	    view
+	    returns (bool)
+	{
+	    return (parties[partyName].currentNumberOfGuests >= parties[partyName].maxGuestsPermitted);
+	}
+
+	function partyHasExpired(string memory partyName)
+	    public
+	    view
+	    returns (bool)
+	{
+	    return (now >= parties[partyName].closeTime);
 	}
 
 	function notStringEmpty(string memory inputString)
