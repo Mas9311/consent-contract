@@ -14,7 +14,6 @@ class App extends Component {
     value: "",
     message: "",
     parties: []
-    // userAddress: ""
   };
 
   render() {
@@ -43,18 +42,18 @@ class App extends Component {
 
             </Card.Group>
             <Card.Group itemsPerRow={2} stackable={true}>
-              <Card fluid color="orange" header="Add a guest" centered="true">
+              <Card fluid color="blue" header="Add a guest" centered="true">
                 <Card.Content>
                   <h4>
-                    Join the Party.
+                    Join a party.
                   </h4>
                   <JoinParty parties = {this.state.parties}/>
                 </Card.Content>
               </Card>
-              <Card fluid color="yellow" header="Finalize" centered="true">
+              <Card fluid color="red" header="Finalize" centered="true">
                 <Card.Content>
                   <h4>
-                    Cancel a Party.
+                    Cancel a party.
                   </h4>
                   <CancelParty parties = {this.state.parties}/>
                 </Card.Content>
@@ -69,14 +68,3 @@ class App extends Component {
 }
 
 export default App;
-
-
-/* line 39
-              <Card color="red" header="">
-                <Card.Content>
-                  <h4>We will surely miss you!</h4>
-                  <br />
-                  <Unregister />
-                </Card.Content>
-              </Card>
- */

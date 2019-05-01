@@ -28,12 +28,13 @@ class CancelParty extends Component {
     let currentAccount = accounts[0];
     //console.log(currentAccount);
 
-
     if (!this.state.loading) {
       if (this.state.partyName !== "" && this.state.reason !== "") {
         if (await consent.methods
             .profileDoesNotExist() // Profile must exist to cancel party
-            .call({from: currentAccount})) {
+            .call({
+              from: currentAccount
+            })) {
 
           this.setState({
             loading: false,
@@ -113,7 +114,7 @@ class CancelParty extends Component {
       <Modal
         trigger={
           <Button color="red" onClick={this.handleOpen} inverted>
-            Create a New Party
+            Cancel a Party
           </Button>
         }
         open={this.state.modalOpen}

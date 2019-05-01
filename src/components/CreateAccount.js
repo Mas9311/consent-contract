@@ -33,7 +33,9 @@ class CreateAccount extends Component {
         if (this.state.lastName !== "") {
           if (await consent.methods
               .profileDoesNotExist() // The "modifier-function" that returns a boolean.
-              .call({ from: currentAccount })) {
+              .call({
+                from: currentAccount
+              })) {
             // Only able to reach this point if the user has not created an account for their current metamask address.
             this.setState({
               loading: true,
