@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Button, Header, Icon, Modal, Form, Message } from "semantic-ui-react";
 import web3 from "../web3";
 import consent from "../consent";
-import Party from "../Party";
 
 class JoinParty extends Component {
   state = {
