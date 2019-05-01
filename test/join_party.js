@@ -19,7 +19,7 @@ contract('ConsentContract:addGuestToParty', function(accounts) {
     try {
       await consent.createParty1C("The North", 2, {from: accounts[0]});
     } catch (err) {
-      assert(false);
+      assert.fail();
     }
   });
 
@@ -27,7 +27,7 @@ contract('ConsentContract:addGuestToParty', function(accounts) {
   it("should fail to join the Party, user has not created a profile", async function () {
     try {
       await consent.addGuestToParty("The North", {from: accounts[9]});
-      assert(false);
+      assert.fail();
     } catch (err) {
       // console.log(err.toString());
       assert.strictEqual(
@@ -42,7 +42,7 @@ contract('ConsentContract:addGuestToParty', function(accounts) {
   it("should fail to join the Party, party name is empty", async function () {
     try {
       await consent.addGuestToParty("", {from: accounts[1]});
-      assert(false);
+      assert.fail();
     } catch (err) {
       // console.log(err.toString());
       assert.strictEqual(
@@ -57,7 +57,7 @@ contract('ConsentContract:addGuestToParty', function(accounts) {
   it("should fail to join the Party, is Party owner", async function () {
     try {
       await consent.addGuestToParty("The North", {from: accounts[0]});
-      assert(false);
+      assert.fail();
     } catch (err) {
       // console.log(err.toString());
       assert.strictEqual(
@@ -72,7 +72,7 @@ contract('ConsentContract:addGuestToParty', function(accounts) {
     try {
       await consent.addGuestToParty("The North", {from: accounts[1]});
     } catch (err) {
-      assert(false);
+      assert.fail();
     }
   });
 
@@ -80,7 +80,7 @@ contract('ConsentContract:addGuestToParty', function(accounts) {
   it("should fail to join createdParty, already in party", async function () {
     try {
       await consent.addGuestToParty("The North", {from: accounts[1]});
-      assert(false);
+      assert.fail();
     } catch (err) {
       // console.log(err.toString());
       assert.strictEqual(
@@ -95,7 +95,7 @@ contract('ConsentContract:addGuestToParty', function(accounts) {
   it("should fail to join createdParty, party does not exist", async function () {
     try {
       await consent.addGuestToParty("The South", {from: accounts[3]});
-      assert(false);
+      assert.fail();
     } catch (err) {
       // console.log(err.toString());
       assert.strictEqual(
@@ -110,23 +110,23 @@ contract('ConsentContract:addGuestToParty', function(accounts) {
     try {
       await consent.addGuestToParty("The North", {from: accounts[2]});
     } catch (err) {
-      assert(false);
+      assert.fail();
     }
   });
 
 
-  // // AH! A BUG!
-  //
-  // it("should fail to join createdParty, party full", async function () {
-  //   try {
-  //     await consent.addGuestToParty("The North", {from: accounts[3]});
-  //     assert(false);
-  //   } catch (err) {
-  //     assert.strictEqual(
-  //         err.toString(),
-  //         "Error: Returned error: VM Exception while processing transaction: revert " +
-  //         "Party is not in the Initialized state -- Reason given: Party is not in the Initialized state."
-  //     );
-  //   }
-  // });
+  // AH! A BUG!
+
+  it("should fail to join createdParty, party full", async function () {
+    try {
+      await consent.addGuestToParty("The North", {from: accounts[3]});
+      assert.fail();
+    } catch (err) {
+      assert.strictEqual(
+          err.toString(),
+          "Error: Returned error: VM Exception while processing transaction: revert " +
+          "Party is not in the Initialized state -- Reason given: Party is not in the Initialized state."
+      );
+    }
+  });
 });

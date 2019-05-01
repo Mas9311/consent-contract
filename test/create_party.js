@@ -13,33 +13,33 @@ contract('ConsentContract:createParty', function(accounts) {
 
   it("should create a Party -- 1A", async function () {
     try {
-      await consent.createParty1A("Default 1A", {from: accounts[0]})
+      await consent.createParty1A("Default 1A", {from: accounts[0]});
     } catch (err) {
-      assert(false);
+      assert.fail();
     }
   });
 
   it("should create a Party -- 1B time limit", async function () {
     try {
-      await consent.createParty1B("Max Guests 1B", 1, {from: accounts[0]})
+      await consent.createParty1B("Max Guests 1B", 1, {from: accounts[0]});
     } catch (err) {
-      assert(false);
+      assert.fail();
     }
   });
 
   it("should create a Party -- 1C max number of guests", async function () {
     try {
-      await consent.createParty1C("Time Limit 1C", 5, {from: accounts[0]})
+      await consent.createParty1C("Time Limit 1C", 5, {from: accounts[0]});
     } catch (err) {
-      assert(false);
+      assert.fail();
     }
   });
 
   it("should create a Party -- 1D time limit + max number of guests", async function () {
     try {
-      await consent.createParty1D("Max Guests + Time Limit 1D", 1, 5, {from: accounts[0]})
+      await consent.createParty1D("Max Guests + Time Limit 1D", 1, 5, {from: accounts[0]});
     } catch (err) {
-      assert(false);
+      assert.fail();
     }
   });
 
@@ -47,14 +47,14 @@ contract('ConsentContract:createParty', function(accounts) {
   it("should fail to create a Party, no existing profile", async function () {
     try {
       await consent.createParty1A("No Account", {from: accounts[9]});
-      assert(false)
+      assert.fail();
     } catch (err) {
       // console.log(err.toString());
       assert.strictEqual(
           err.toString(),
           "Error: Returned error: VM Exception while processing transaction: revert " +
           "You must first create a profile -- Reason given: You must first create a profile."
-      )
+      );
     }
   });
 
@@ -62,14 +62,14 @@ contract('ConsentContract:createParty', function(accounts) {
   it("should fail to create a Party, party name empty", async function () {
     try {
       await consent.createParty1A("", {from: accounts[0]});
-      assert(false)
+      assert.fail();
     } catch (err) {
       // console.log(err.toString());
       assert.strictEqual(
           err.toString(),
           "Error: Returned error: VM Exception while processing transaction: revert " +
           "String cannot be empty -- Reason given: String cannot be empty."
-      )
+      );
     }
   });
 
@@ -77,14 +77,14 @@ contract('ConsentContract:createParty', function(accounts) {
   it("should fail to create a Party, party already created", async function () {
     try {
       await consent.createParty1A("Default 1A", {from: accounts[0]});
-      assert(false)
+      assert.fail();
     } catch (err) {
       // console.log(err.toString());
       assert.strictEqual(
           err.toString(),
           "Error: Returned error: VM Exception while processing transaction: revert " +
           "Party is already created -- Reason given: Party is already created."
-      )
+      );
     }
   });
 

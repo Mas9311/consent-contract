@@ -17,7 +17,7 @@ contract('ConsentContract:createProfile', function(accounts) {
   it("should fail to create a Profile, first name is empty", async function () {
     try {
       await consent.createProfile("", "First Name is empty", {from: accounts[1]});
-      assert(false)
+      assert.fail();
     } catch (err) {
       // console.log(err.toString());
       assert.strictEqual(
@@ -32,7 +32,7 @@ contract('ConsentContract:createProfile', function(accounts) {
   it("should fail to create a Profile, last name is empty", async function () {
     try {
       await consent.createProfile("Last Name is empty", "", {from: accounts[1]});
-      assert(false)
+      assert.fail();
     } catch (err) {
       // console.log(err.toString());
       assert.strictEqual(
@@ -47,7 +47,7 @@ contract('ConsentContract:createProfile', function(accounts) {
   it("should fail to create a Profile, already created a profile", async function () {
     try {
       await consent.createProfile("Failure", "Already created a Profile", {from: accounts[0]});
-      assert(false)
+      assert.fail();
     } catch (err) {
       // console.log(err.toString());
       assert.strictEqual(
