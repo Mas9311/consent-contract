@@ -7,6 +7,7 @@ import CreateAccount from "./components/CreateAccount";
 
 import NavigationBar from "./components/NavigationBar";
 import JoinParty from "./components/JoinParty";
+import CancelParty from "./components/CancelParty";
 
 class App extends Component {
   state = {
@@ -66,8 +67,9 @@ class App extends Component {
               <Card fluid color="yellow" header="Finalize" centered="true">
                 <Card.Content>
                   <h4>
-                    Close the party.
+                    Cancel a Party.
                   </h4>
+                  <CancelParty/>
                 </Card.Content>
               </Card>
 

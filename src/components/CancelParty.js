@@ -3,7 +3,7 @@ import { Button, Header, Icon, Modal, Form, Message } from "semantic-ui-react";
 import web3 from "../web3";
 import consent from "../consent";
 
-class JoinParty extends Component {
+class CancelParty extends Component {
   state = {
     modalOpen: false,
     partyName: "",
@@ -15,7 +15,8 @@ class JoinParty extends Component {
   handleOpen = () => this.setState({
     modalOpen: true,
     partyName: "",
-    message: "Please enter the party name you would like to join",
+    reason: "",
+    message: "Please enter the party name you would like to cancel",
     errorMessage: ""
   });
 
@@ -29,14 +30,14 @@ class JoinParty extends Component {
 
 
     if (!this.state.loading) {
-      if (this.state.partyName !== "") {
+      if (this.state.partyName !== "" && this.state.reason !== "") {
         if (await consent.methods
-            .profileDoesNotExist() // Profile must exist to join paraty
+            .profileDoesNotExist() // Profile must exist to cancel party
             .call({from: currentAccount})) {
 
           this.setState({
             loading: false,
-            errorMessage: "Error: You must create a profile before joining a party",
+            errorMessage: "Error: You cannot cancel a party without a profile",
             message: ""
           });
         }
@@ -45,7 +46,7 @@ class JoinParty extends Component {
             .call({from: currentAccount})) {
           this.setState({
             loading: false,
-            errorMessage: "Error: Party must exist to be joinable",
+            errorMessage: "Error: Party must exist to be cancelable",
             message: ""
           });
         }
@@ -55,31 +56,23 @@ class JoinParty extends Component {
 
           this.setState({
             loading: false,
-            errorMessage: "Error: Party must not be closed to be joinable",
+            errorMessage: "Error: Party must not be closed to be cancelable",
             message: ""
           });
-        } else if (await consent.methods
+        } else if (!await consent.methods
             .partyOwner(this.state.partyName)
             .call({from: currentAccount})) {
           this.setState({
             loading: false,
-            errorMessage: "Error: You cannot join the party you created, owner in party by default",
+            errorMessage: "Error: You cannot cancel a party you did not create",
             message: ""
           });
-        } else if (!await consent.methods
-            .notYetAddedToParty(this.state.partyName)
-            .call({from: currentAccount})) {
-          this.setState({
-            loading: false,
-            errorMessage: "Error: Already in party, cannot join again",
-            message: ""
-          })
         } else if(await  consent.methods
             .partyFull(this.state.partyName)
             .call({from: currentAccount})) {
           this.setState({
             loading: false,
-            errorMessage: "Error: Party is full, unable to join",
+            errorMessage: "Error: Party is full, cannot cancel full party",
             message: ""
           })
         } else if (await consent.methods
@@ -87,7 +80,7 @@ class JoinParty extends Component {
             .call({from: currentAccount})) {
           this.setState({
             loading: false,
-            errorMessage: "Error: This party has expired, no longer able to join",
+            errorMessage: "Error: This party has expired, no longer able to cancel",
             message: ""
           })
         } else {
@@ -103,10 +96,14 @@ class JoinParty extends Component {
                 loading: true,
                 partyName: "",
                 errorMessage: "",
-                message: "Success: You have joined the party" // show the user the transaction was successful
+                message: "Success: You have canceled the party" // show the user the transaction was successful
               })
             });
         }
+      } else {
+        this.setState({
+          message: "Must specify party to cancel and reason for cancelling" // show the user the transaction was successful
+        })
       }
     }
   };
@@ -115,14 +112,14 @@ class JoinParty extends Component {
     return (
       <Modal
         trigger={
-          <Button color="blue" onClick={this.handleOpen} inverted>
+          <Button color="red" onClick={this.handleOpen} inverted>
             Create a New Party
           </Button>
         }
         open={this.state.modalOpen}
         onClose={this.handleClose}
       >
-        <Header icon="browser" content="Join a Party" />
+        <Header icon="browser" content="Cancel a Party" />
         <Modal.Content>
           <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage}>
             <Form.Field>
@@ -135,11 +132,21 @@ class JoinParty extends Component {
                   })}
               />
             </Form.Field>
+            <Form.Field>
+              <label>Your Party Name</label>
+              <input
+                placeholder="Reason for cancelling"
+                onChange={event =>
+                  this.setState({
+                    reason: event.target.value
+                  })}
+              />
+            </Form.Field>
 
             <Message error header="Oops!" content={this.state.errorMessage} />
             <Button primary type="submit" loading={this.state.loading}>
               <Icon name="check" />
-              Join the Party!
+              Cancel a Party
             </Button>
             <hr />
             <h2>{this.state.partyName}</h2>
@@ -156,4 +163,4 @@ class JoinParty extends Component {
   }
 }
 
-export default JoinParty;
+export default CancelParty;
