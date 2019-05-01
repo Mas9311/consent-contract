@@ -105,10 +105,18 @@ contract ConsentContract {
     	_;
 	}
 
+	modifier notPartyHasExpiredModifier(string memory partyName) {
+	    require(
+            !partyHasExpired(partyName),
+        	"Cannot join a party that has an expired time"
+    	);
+    	_;
+	}
+
 	modifier partyNotFullModifier(string memory partyName) {
 	    require(
             !partyFull(partyName),
-        	"You are already in the party"
+        	"No more guests can join the party"
     	);
     	_;
 	}
@@ -131,7 +139,7 @@ contract ConsentContract {
 	}
 
 	// Step 1a.
-	//   Alice creates the party with:
+	//   Alice creates the party (Initialized) with:
 	//   - default closeTime of 5 minutes.
 	//   - default maxGuests of 1.
 	function createParty1A(string memory partyName)
@@ -151,7 +159,7 @@ contract ConsentContract {
 	}
 
 	// Step 1b.
-	//   Alice creates the party with:
+	//   Alice creates the party (Initialized) with:
 	//   - a specified closeTime of x (in minutes).
 	//   - default maxGuests of 1.
 	function createParty1B(string memory partyName, uint256 closeTimeInMinutes)
@@ -171,7 +179,7 @@ contract ConsentContract {
 	}
 
 	// Step 1c.
-	//  Alice creates the party with:
+	//  Alice creates the party (Initialized) with:
 	//  - default closeTime of 5 minutes.
 	//  - a max of y number of guests permitted.
 	function createParty1C(string memory partyName, uint256 maxNumberOfGuests)
@@ -190,8 +198,8 @@ contract ConsentContract {
     	party1c.maxGuestsPermitted = maxNumberOfGuests;
 	}
 
-	// Step 1d=(1b & 1c).
-	//  Alice creates the party with:
+	// Step 1d = (1b + 1c).
+	//  Alice creates the party (Initialized) with:
 	//  - a specified closeTime of x (in minutes).
 	//  - a max of y number of guests permitted.
 	function createParty1D(string memory partyName, uint256 closeTimeInMinutes, uint256 maxNumberOfGuests)
@@ -211,11 +219,13 @@ contract ConsentContract {
 	}
 
 	// Step 2.
-	//  Alice invites Bob (through personal message or by word of mouth)
+	//  Alice invites Bob (through a messaging app or by word of mouth)
 	//  to join the party by sending the partyName string.
 
 	// Step 3.
-	//  Bob joins the party (saving his consent to the party).
+	//  Bob joins the party (saves his consent to the party).
+	//  If (Bob joining now make the party full):
+	//  - Add Alice's consent and close the party (Finalized).
 	function addGuestToParty(string memory partyName)
     	public
     	profileExistsModifier
@@ -223,6 +233,7 @@ contract ConsentContract {
     	partyInitializedModifier(partyName)
     	notPartyOwnerModifier(partyName)
     	notYetAddedToPartyModifier(partyName)
+    	notPartyHasExpiredModifier(partyName)
 	{
     	Party storage party3 = parties[partyName];
     	ConsentingUser storage guest = party3.consentingUsers[party3.currentNumberOfGuests++];
@@ -234,10 +245,11 @@ contract ConsentContract {
     	// Add the owner as a consenting guest in the party
     	if (party3.currentNumberOfGuests == party3.maxGuestsPermitted) {
     	    ConsentingUser storage ownerAsGuest = party3.consentingUsers[party3.currentNumberOfGuests++];
+
     	    ownerAsGuest.timeAdded = now;
     	    ownerAsGuest.userAddress = party3.owner;
-    	    party3.added[party3.owner] = true;
 
+    	    party3.added[party3.owner] = true;
     	    party3.state = ContractState.Finalized;
     	    party3.closeTime = now;
     	}
@@ -246,8 +258,11 @@ contract ConsentContract {
 	// (OPTIONAL)
 	// Step 4.
 	//  Alice cancels her consent.
-	//  - party is finalized.
-	// Alice can ONLY cancel the party when the maxNumberOfGuests is not at full-capacity.
+	//  - close the party (Finalized).
+	// Alice can ONLY cancel the party:
+	//  - if (the maxNumberOfGuests is not at full-capacity)
+	//      and
+	//  - must give a reason to why they chose to cancel.
 	function ownerCancels(string memory partyName, string memory reason)
     	public
     	notStringEmptyModifier(partyName)
@@ -315,6 +330,14 @@ contract ConsentContract {
 	    returns (bool)
 	{
 	    return (parties[partyName].currentNumberOfGuests >= parties[partyName].maxGuestsPermitted);
+	}
+
+	function partyHasExpired(string memory partyName)
+	    public
+	    view
+	    returns (bool)
+	{
+	    return (now >= parties[partyName].closeTime);
 	}
 
 	function notStringEmpty(string memory inputString)

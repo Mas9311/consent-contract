@@ -72,6 +72,7 @@ contract('ConsentContract:addGuestToParty', function(accounts) {
     try {
       await consent.addGuestToParty("The North", {from: accounts[1]});
     } catch (err) {
+      console.log(err);
       assert.fail();
     }
   });
