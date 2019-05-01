@@ -267,9 +267,9 @@ contract ConsentContract {
     	public
     	notStringEmptyModifier(partyName)
     	notStringEmptyModifier(reason)
+    	partyNotFullModifier(partyName)
     	partyInitializedModifier(partyName)
     	partyOwnerModifier(partyName)
-    	partyNotFullModifier(partyName)
 	{
     	Party storage party4 = parties[partyName];
 
