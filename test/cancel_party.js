@@ -1,4 +1,4 @@
-const ConsentContract = artifacts.require("ConsentContract.sol");
+const ConsentContract = artifacts.require("ConsentContract");
 const assert = require("assert");
 let consent;
 
@@ -22,7 +22,7 @@ contract('ConsentContract:cancelParty', function(accounts) {
       assert.strict.fail();
     } catch (err) {
       // console.log(err.toString());
-      assert.strict.equal(
+      assert.strictEqual(
           err.toString(),
           "Error: Returned error: VM Exception while processing transaction: revert " +
           "You must be the party's creator to access -- Reason given: You must be the party's creator to access."
@@ -38,7 +38,7 @@ contract('ConsentContract:cancelParty', function(accounts) {
       assert.strict.fail();
     } catch (err) {
       // console.log(err.toString());
-      assert.strict.equal(
+      assert.strictEqual(
           err.toString(),
           "Error: Returned error: VM Exception while processing transaction: revert " +
           "No more guests can join the party -- Reason given: No more guests can join the party."
