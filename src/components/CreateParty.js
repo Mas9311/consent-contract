@@ -19,7 +19,8 @@ class CreateParty extends Component {
     partyName: "",
     maxNumberOfGuests: "",
     timeLimit: "",
-    message: "Please enter your party name, maximum number of guests(optional), and a time limit(optional)",
+    message: "Please enter a Party name. " +
+        "(Optional) You may specify the max number of guests and the time limit until the party expires.",
     errorMessage: ""
   });
 
@@ -31,20 +32,20 @@ class CreateParty extends Component {
     let currentAccount = accounts[0];
 
     if (!this.state.loading) {
-      if (this.state.partyName !== "") {
-        if (await consent.methods
-            .profileDoesNotExist() // Profile must exist to join party
+      if (this.state.partyName !== "") { // notStringEmpty(partyName)
+        if (!await consent.methods
+            .profileExists() // You have not created a Profile
             .call({
               from: currentAccount
             })) {
 
           this.setState({
             loading: false,
-            errorMessage: "Error: You must create a profile before creating a party.",
+            errorMessage: "Error: You must create an Account before creating a Party.",
             message: ""
           });
-        } else if (!await consent.methods
-            .partyDoesNotExist(this.state.partyName) // Party already exists
+        } else if (await consent.methods
+            .partyExists(this.state.partyName) // Party already exists
             .call({
               from: currentAccount
             })) {
@@ -54,8 +55,7 @@ class CreateParty extends Component {
             errorMessage: "Error: A Party by this name has already been created.",
             message: ""
           });
-        } else {
-
+        } else { // No problems with requirements
           this.setState({
             loading: true,
             errorMessage: "",
@@ -84,7 +84,7 @@ class CreateParty extends Component {
                           " with a maximum number of 1 guest " +
                           " that will close in 5 minutes."
                     });
-                    document.getElementById('party_name').value = "";
+                    // document.getElementById('party_name').value = "";
                   });
             } // end 1A
 
@@ -97,8 +97,8 @@ class CreateParty extends Component {
                   timeLimit: Number(this.state.timeLimit)
                 });
               } catch (err) {
-                console.log("timeLimit is not a Number. " + err.message);
-              } // end convert timeLimit to a Number
+                console.log("timeLimit is not a number. " + err.message);
+              } // end convert timeLimit to a number
 
               if (typeof this.state.timeLimit === 'number') {
                 if (this.state.timeLimit > 0) {
@@ -122,8 +122,8 @@ class CreateParty extends Component {
                               " with a maximum number of 1 guest " +
                               " that will close in " + tl + " minutes."
                         });
-                        document.getElementById('party_name').value = "";
-                        document.getElementById('time_limit').value = "";
+                        // document.getElementById('party_name').value = "";
+                        // document.getElementById('time_limit').value = "";
                       });
                 } else {
                   this.setState({
@@ -135,10 +135,10 @@ class CreateParty extends Component {
               } else {
                 this.setState({
                   loading: false,
-                  errorMessage: "Error: Time Limit is not a Number.",
+                  errorMessage: "Error: Time Limit is not a number.",
                   message: ""
                 });
-              } // end timeLimit is a Number check
+              } // end timeLimit is a number check
             } // end 1B
 
             // 1C:
@@ -150,8 +150,8 @@ class CreateParty extends Component {
                   maxNumberOfGuests: Number(this.state.maxNumberOfGuests)
                 });
               } catch (err) {
-                console.log("maxNumberOfGuests is not a Number. " + err.message);
-              } // end convert maxNumberOfGuests to a Number
+                console.log("maxNumberOfGuests is not a number. " + err.message);
+              } // end convert maxNumberOfGuests to a number
 
               if (typeof this.state.maxNumberOfGuests === 'number') {
                 if (this.state.maxNumberOfGuests > 0) {
@@ -165,14 +165,18 @@ class CreateParty extends Component {
                       })
                       .on('confirmation', (confirmationNumber, receipt) => {
                         // Can only update this.state once the transaction has been approved.
+                        const pn = this.state.partyName;
+                        const mg = this.state.maxNumberOfGuests;
                         this.setState({
                           loading: false,
-                          message: "Transaction approved. Party name: " + this.state.partyName +
-                              " with a maximum number of " + this.state.maxNumberOfGuests + " guests " +
+                          partyName: "",
+                          maxNumberOfGuests: "",
+                          message: "Transaction approved. Party name: " + pn +
+                              " with a maximum number of " + mg + " guest(s) " +
                               " that will close in 5 minutes."
                         });
-                        document.getElementById('party_name').value = "";
-                        document.getElementById('max_guests').value = "";
+                        // document.getElementById('party_name').value = "";
+                        // document.getElementById('max_guests').value = "";
                       });
                 } else {
                   this.setState({
@@ -184,10 +188,10 @@ class CreateParty extends Component {
               } else {
                 this.setState({
                   loading: false,
-                  errorMessage: "Error: Max Number of Guests is not a Number.",
+                  errorMessage: "Error: Max Number of Guests is not a number.",
                   message: ""
                 });
-              } // end maxNumberOfGuests is a Number check
+              } // end maxNumberOfGuests is a number check
             } // end 1C
 
             // 1D
@@ -199,16 +203,16 @@ class CreateParty extends Component {
                   maxNumberOfGuests: Number(this.state.maxNumberOfGuests)
                 });
               } catch (err) {
-                console.log("maxNumberOfGuests is not a Number. " + err.message);
-              } // end convert maxNumberOfGuests to a Number
+                console.log("maxNumberOfGuests is not a number. " + err.message);
+              } // end convert maxNumberOfGuests to a number
 
               try {
                 this.setState({
                   timeLimit: Number(this.state.timeLimit)
                 });
               } catch (err) {
-                console.log("timeLimit is not a Number. " + err.message);
-              } // end convert timeLimit to a Number
+                console.log("timeLimit is not a number. " + err.message);
+              } // end convert timeLimit to a number
 
               if (typeof this.state.timeLimit === 'number') {
                 if (this.state.timeLimit > 0) {
@@ -224,16 +228,22 @@ class CreateParty extends Component {
                             from: currentAccount
                           })
                           .on('confirmation', (confirmationNumber, receipt) => {
-                            // Can only update this.state once the transaction has been approved.
+                            const pn = this.state.partyName;
+                            const tl = this.state.timeLimit;
+                            const mg = this.state.maxNumberOfGuests;
+
                             this.setState({
                               loading: false,
-                              message: "Transaction approved. Party name: " + this.state.partyName +
-                                  " with a maximum number of " + this.state.maxNumberOfGuests + " guests " +
-                                  " that will close in " + this.state.timeLimit + " minutes."
+                              partyName: "",
+                              timeLimit: "",
+                              maxNumberOfGuests: "",
+                              message: "Transaction approved. Party name: " + pn +
+                                  " with a maximum number of " + mg + " guest(s) " +
+                                  " that will close in " + tl + " minutes."
                             });
-                            document.getElementById('party_name').value = "";
-                            document.getElementById('time_limit').value = "";
-                            document.getElementById('max_guests').value = "";
+                            // document.getElementById('party_name').value = "";
+                            // document.getElementById('time_limit').value = "";
+                            // document.getElementById('max_guests').value = "";
                           });
                     } else {
                       this.setState({
@@ -245,10 +255,10 @@ class CreateParty extends Component {
                   } else {
                     this.setState({
                       loading: false,
-                      errorMessage: "Error: Max Number of Guests is not a Number.",
+                      errorMessage: "Error: Max Number of Guests is not a number.",
                       message: ""
                     });
-                  } // end maxNumberOfGuests is a Number check
+                  } // end maxNumberOfGuests is a number check
                 } else {
                   this.setState({
                     loading: false,
@@ -259,10 +269,10 @@ class CreateParty extends Component {
               } else {
                 this.setState({
                   loading: false,
-                  errorMessage: "Error: Time Limit is not a Number.",
+                  errorMessage: "Error: Time Limit is not a number.",
                   message: ""
                 });
-              } // end timeLimit is a Number check
+              } // end timeLimit is a number check
             } // end 1D
           } catch (err) {
             // User clicked the reject button in the metamask popup window.

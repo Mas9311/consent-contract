@@ -29,14 +29,23 @@ class CreateAccount extends Component {
     let currentAccount = accounts[0];
 
     if (!this.state.loading) {
-      if (this.state.firstName !== "") {
-        if (this.state.lastName !== "") {
+      if (this.state.firstName !== "") { // notStringEmpty(firstName)
+        if (this.state.lastName !== "") { // notStringEmpty(lastName)
           if (await consent.methods
-              .profileDoesNotExist() // The "modifier-function" that returns a boolean.
+              .profileExists() // You have already created a Profile
               .call({
                 from: currentAccount
               })) {
-            // Only able to reach this point if the user has not created an account for their current metamask address.
+
+            this.setState({
+              lading: false,
+              firstName: "", // Clear the first name field so they don't click it again.
+              lastName: "", // Clear the last name field.
+              message: "You have already created an Account and cannot create another."
+            });
+            document.getElementById('first_input').value = "";
+            document.getElementById('last_input').value = "";
+          } else { // No problems with requirements
             this.setState({
               loading: true,
               errorMessage: "",
@@ -56,10 +65,10 @@ class CreateAccount extends Component {
                       loading: false,
                       firstName: "", // Clear the first name field so they don't click it again.
                       lastName: "", // Clear the last name field.
-                      message: "Success: Your account has been created under " + fn + " " + ln
+                      message: "Success: Your account has been created under " + fn + " " + ln + "."
                     });
-                    document.getElementById('first_input').value = "";
-                    document.getElementById('last_input').value = "";
+                    // document.getElementById('first_input').value = "";
+                    // document.getElementById('last_input').value = "";
                   });
             } catch (err) {
               // User clicked the reject button in the metamask popup window.
@@ -70,15 +79,6 @@ class CreateAccount extends Component {
                 message: "Error: Transaction rejected."
               });
             }
-          } else {
-            // this is when the "modifier-function", profileDoesNotExist(), returns false.
-            this.setState({
-              firstName: "", // Clear the first name field so they don't click it again.
-              lastName: "", // Clear the last name field.
-              message: "You have already created an account and cannot create another."
-            });
-            document.getElementById('first_input').value = "";
-            document.getElementById('last_input').value = "";
           }
         } else {
           // last name field is empty.

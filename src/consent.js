@@ -1,12 +1,6 @@
 import web3 from "./web3";
 
-// const address = "0xfB0C083466f440e3dbC996ba9059323F701f9214"; // contract without modifier-functions
-// const address = "0xA61dB4628622109684E0E78cDCa91eBAeAa4C74b"; // newest contract
-const address = "0x7C58303c9305CF025734673c8B25eF974eb2eF8c"; // newer-est contract
-
 const abi = require("./compiled/ConsentContract")["abi"];
-// const bytecode = require("./compiled/ConsentContract.json")["bytecode"];
-
-// console.log(abi); // To see if the abi works correctly. It does [:
+const address = "0xe890E5759170f3332404a7Df8a0b625B5b439c25"; // final contract address
 
 export default new web3.eth.Contract(abi, address);

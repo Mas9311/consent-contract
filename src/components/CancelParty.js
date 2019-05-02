@@ -30,42 +30,42 @@ class CancelParty extends Component {
     //console.log(currentAccount);
 
     if (!this.state.loading) {
-      if (this.state.partyName !== "") {
-        if (this.state.reason !== "") {
-          if (await consent.methods
-              .profileDoesNotExist() // Profile must exist to cancel party
+      if (this.state.partyName !== "") { // notStringEmpty(partyName)
+        if (this.state.reason !== "") { // notStringEmpty(reason)
+          if (!await consent.methods
+              .profileExists() // You have not created a Profile
               .call({
                 from: currentAccount
               })) {
 
             this.setState({
               loading: false,
-              errorMessage: "Error: You must create a profile before cancelling a Party.",
+              errorMessage: "Error: You must create an Account before cancelling a Party.",
               message: ""
             });
           } else if (await consent.methods
-              .partyDoesNotExist(this.state.partyName)
+              .partyFull(this.state.partyName) // Party is at max capacity
               .call({
                 from: currentAccount
               })) {
             this.setState({
               loading: false,
-              errorMessage: "Error: There is no Party by that name.",
+              errorMessage: "Error: Party is already full, therefore you cannot cancel the Party.",
               message: ""
             });
           } else if (!await consent.methods
-              .partyInitialized(this.state.partyName) // Party must exist to join it
+              .partyInitialized(this.state.partyName) // Party either does not exist or is finalized
               .call({
                 from: currentAccount
               })) {
 
             this.setState({
               loading: false,
-              errorMessage: "Error: Party cannot be canceled if it is already finalized.",
+              errorMessage: "Error: Party cannot be canceled if it has not been created or is already finalized.",
               message: ""
             });
           } else if (!await consent.methods
-              .partyOwner(this.state.partyName)
+              .partyOwner(this.state.partyName) // You are the owner of the Party
               .call({
                 from: currentAccount
               })) {
@@ -75,17 +75,7 @@ class CancelParty extends Component {
               message: ""
             });
           } else if (await consent.methods
-              .partyFull(this.state.partyName)
-              .call({
-                from: currentAccount
-              })) {
-            this.setState({
-              loading: false,
-              errorMessage: "Error: Party is already full, therefore you cannot cancel the Party.",
-              message: ""
-            });
-          } else if (await consent.methods
-              .partyHasExpired(this.state.partyName)
+              .partyHasExpired(this.state.partyName) // Party has already expired (now >= closeTime)
               .call({
                 from: currentAccount
               })) {
@@ -94,7 +84,7 @@ class CancelParty extends Component {
               errorMessage: "Error: This Party has expired, therefore you are not able to cancel.",
               message: ""
             });
-          } else {
+          } else { // No problems with requirements
             this.setState({
               loading: true,
               errorMessage: "",
@@ -116,8 +106,8 @@ class CancelParty extends Component {
                       errorMessage: "",
                       message: "Success: You have canceled the Party." // show the user the transaction was successful
                     });
-                    document.getElementById('party_name').value = "";
-                    document.getElementById('reason_cancel').value = "";
+                    // document.getElementById('party_name').value = "";
+                    // document.getElementById('reason_cancel').value = "";
                   });
             } catch (err) {
               // User clicked the reject button in the metamask popup window.

@@ -15,7 +15,7 @@ class JoinParty extends Component {
   handleOpen = () => this.setState({
     modalOpen: true,
     partyName: "",
-    message: "Please enter the party name you would like to join",
+    message: "Please enter the Party name you would like to join",
     errorMessage: ""
   });
 
@@ -28,34 +28,34 @@ class JoinParty extends Component {
     //console.log(currentAccount);
 
     if (!this.state.loading) {
-      if (this.state.partyName !== "") {
-        if (await consent.methods
-            .profileDoesNotExist() // Profile must exist to join party
+      if (this.state.partyName !== "") { // notStringEmpty(partyName)
+        if (!await consent.methods
+            .profileExists() // Profile has not been created
             .call({
               from: currentAccount
             })) {
 
           this.setState({
             loading: false,
-            errorMessage: "Error: You must create a profile before joining a party",
-            message: ""
-          });
-        } else if (await consent.methods
-            .partyDoesNotExist(this.state.partyName)
-            .call({from: currentAccount})) {
-
-          this.setState({
-            loading: false,
-            errorMessage: "Error: Party must exist to be joinable",
+            errorMessage: "Error: You must create a profile before creating a party.",
             message: ""
           });
         } else if (!await consent.methods
-            .partyInitialized(this.state.partyName) // Party must exist to join it
+            .partyExists(this.state.partyName) // Party has not been created
             .call({from: currentAccount})) {
 
           this.setState({
             loading: false,
-            errorMessage: "Error: Party must not be closed to be joinable",
+            errorMessage: "Error: There is no Party by that name.",
+            message: ""
+          });
+        } else if (!await consent.methods
+            .partyInitialized(this.state.partyName) // Party is finalized
+            .call({from: currentAccount})) {
+
+          this.setState({
+            loading: false,
+            errorMessage: "Error: You cannot join a Party that has already finalized.",
             message: ""
           });
         } else if (await consent.methods
@@ -64,7 +64,7 @@ class JoinParty extends Component {
 
           this.setState({
             loading: false,
-            errorMessage: "Error: You cannot join the party you created, owner in party by default",
+            errorMessage: "Error: You cannot join a Party that you created. Owner is in the Party by default.",
             message: ""
           });
         } else if (!await consent.methods
@@ -73,7 +73,7 @@ class JoinParty extends Component {
 
           this.setState({
             loading: false,
-            errorMessage: "Error: Already in party, cannot join again",
+            errorMessage: "Error: You cannot re-join a Party that you already joined.",
             message: ""
           })
         } else if (await consent.methods
@@ -84,7 +84,7 @@ class JoinParty extends Component {
 
           this.setState({
             loading: false,
-            errorMessage: "Error: Party is full, unable to join",
+            errorMessage: "Error: Cannot join a full Party.",
             message: ""
           })
         } else if (await consent.methods
@@ -95,7 +95,7 @@ class JoinParty extends Component {
 
           this.setState({
             loading: false,
-            errorMessage: "Error: This party has expired, no longer able to join",
+            errorMessage: "Error: Party has already expired and no one is able to join anymore.",
             message: ""
           })
         } else {
@@ -111,13 +111,14 @@ class JoinParty extends Component {
                   from: currentAccount
                 })
                 .on('confirmation', (confirmationNumber, receipt) => {
+                  const pn = this.state.partyName;
                   this.setState({
                     loading: false,
                     partyName: "",
                     errorMessage: "",
-                    message: "Success: You have joined the party" // show the user the transaction was successful
+                    message: "Success: You have joined the " + pn + " party"
                   });
-                  document.getElementById('party_name').value = "";
+                  // document.getElementById('party_name').value = "";
                 });
           } catch (err) {
             // User clicked the reject button in the metamask popup window.
@@ -132,7 +133,7 @@ class JoinParty extends Component {
       } else {
         // first name field is empty.
         this.setState({
-          message: "Please enter the party name."
+          message: "Please enter the Party name."
         });
       }
     } else {

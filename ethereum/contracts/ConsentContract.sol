@@ -2,7 +2,7 @@ pragma solidity ^0.5.7;
 
 /// @author Michael Smith, Evan Steiner, Ezra Huston
 /// @title A simple consent-saving contract
-// gas limit: minimum of 2785133 to deploy contract
+// gas limit: minimum of 2795736 to deploy contract
 contract ConsentContract {
 	enum ContractState { DoesNotExist, Initialized, Finalized }
 
@@ -41,9 +41,9 @@ contract ConsentContract {
 	function() external {}
 
 
-	modifier profileDoesNotExistModifier {
+	modifier notProfileExistsModifier {
 	    require(
-        	profileDoesNotExist(),
+        	!profileExists(),
         	"You have already created a profile"
     	);
     	_;
@@ -51,7 +51,7 @@ contract ConsentContract {
 
 	modifier profileExistsModifier {
 	    require(
-        	!profileDoesNotExist(),
+        	profileExists(),
         	"You must first create a profile"
     	);
     	_;
@@ -65,9 +65,9 @@ contract ConsentContract {
 	    _;
 	}
 
-	modifier partyDoesNotExistModifier(string memory partyName) {
+	modifier notPartyExistsModifier(string memory partyName) {
     	require(
-        	partyDoesNotExist(partyName),
+        	!partyExists(partyName),
         	"Party is already created"
     	);
     	_;
@@ -113,7 +113,7 @@ contract ConsentContract {
     	_;
 	}
 
-	modifier partyNotFullModifier(string memory partyName) {
+	modifier notPartyFullModifier(string memory partyName) {
 	    require(
             !partyFull(partyName),
         	"No more guests can join the party"
@@ -127,7 +127,7 @@ contract ConsentContract {
 	//  - last name.
 	function createProfile(string memory fName, string memory lName)
     	public
-    	profileDoesNotExistModifier
+    	notProfileExistsModifier
     	notStringEmptyModifier(fName)
     	notStringEmptyModifier(lName)
 	{
@@ -146,7 +146,7 @@ contract ConsentContract {
     	public
     	profileExistsModifier
     	notStringEmptyModifier(partyName)
-    	partyDoesNotExistModifier(partyName)
+    	notPartyExistsModifier(partyName)
 	{
     	Party storage party1a = parties[partyName];
 
@@ -166,7 +166,7 @@ contract ConsentContract {
     	public
     	profileExistsModifier
     	notStringEmptyModifier(partyName)
-    	partyDoesNotExistModifier(partyName)
+    	notPartyExistsModifier(partyName)
 	{
     	Party storage party1b = parties[partyName];
 
@@ -186,7 +186,7 @@ contract ConsentContract {
     	public
     	profileExistsModifier
     	notStringEmptyModifier(partyName)
-    	partyDoesNotExistModifier(partyName)
+    	notPartyExistsModifier(partyName)
 	{
     	Party storage party1c = parties[partyName];
 
@@ -206,7 +206,7 @@ contract ConsentContract {
     	public
     	profileExistsModifier
     	notStringEmptyModifier(partyName)
-    	partyDoesNotExistModifier(partyName)
+    	notPartyExistsModifier(partyName)
 	{
     	Party storage party1d = parties[partyName];
 
@@ -244,11 +244,6 @@ contract ConsentContract {
 
     	// Add the owner as a consenting guest in the party
     	if (party3.currentNumberOfGuests == party3.maxGuestsPermitted) {
-    	    ConsentingUser storage ownerAsGuest = party3.consentingUsers[party3.currentNumberOfGuests++];
-
-    	    ownerAsGuest.timeAdded = now;
-    	    ownerAsGuest.userAddress = party3.owner;
-
     	    party3.added[party3.owner] = true;
     	    party3.state = ContractState.Finalized;
     	    party3.closeTime = now;
@@ -256,7 +251,6 @@ contract ConsentContract {
 	}
 
 	// (OPTIONAL)
-	// Step 4.
 	//  Alice cancels her consent.
 	//  - close the party (Finalized).
 	// Alice can ONLY cancel the party:
@@ -265,11 +259,13 @@ contract ConsentContract {
 	//  - must give a reason to why they chose to cancel.
 	function ownerCancels(string memory partyName, string memory reason)
     	public
+    	profileExistsModifier
     	notStringEmptyModifier(partyName)
     	notStringEmptyModifier(reason)
-    	partyNotFullModifier(partyName)
+    	notPartyFullModifier(partyName)
     	partyInitializedModifier(partyName)
     	partyOwnerModifier(partyName)
+    	notPartyHasExpiredModifier(partyName)
 	{
     	Party storage party4 = parties[partyName];
 
@@ -278,26 +274,24 @@ contract ConsentContract {
     	party4.reasonForCancel = reason;
 	}
 
-	function profileDoesNotExist()
+	function profileExists()
 	    public
 	    view
 	    returns (bool)
 	{
 	    Profile memory profile = profiles[msg.sender];
 
-	    if (bytes(profile.firstName).length == 0)
-        	if (bytes(profile.lastName).length == 0)
-        	    if (profile.timeCreated == 0)
-        	        return true;
-    	return false;
+	    if ((bytes(profile.firstName).length == 0) && (bytes(profile.lastName).length == 0))
+	        return false;
+    	return true;
 	}
 
-	function partyDoesNotExist(string memory partyName)
+	function partyExists(string memory partyName)
 	    public
 	    view
 	    returns (bool)
 	{
-	    return (parties[partyName].state == ContractState.DoesNotExist);
+	    return (parties[partyName].state > ContractState.DoesNotExist);
 	}
 
 	function partyInitialized(string memory partyName)
