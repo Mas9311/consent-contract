@@ -50,18 +50,20 @@ class CreateAccount extends Component {
                   })
                   .on('confirmation', (confirmationNumber, receipt) => {
                     // Can only update this.state's first/last/message once the transaction has been approved.
+                    const fn = this.state.firstName;
+                    const ln = this.state.lastName;
                     this.setState({
                       loading: false,
                       firstName: "", // Clear the first name field so they don't click it again.
                       lastName: "", // Clear the last name field.
-                      message: "Success: Your account has been created." // show the user the transaction was successful
+                      message: "Success: Your account has been created under " + fn + " " + ln
                     });
                     document.getElementById('first_input').value = "";
                     document.getElementById('last_input').value = "";
                   });
             } catch (err) {
               // User clicked the reject button in the metamask popup window.
-              console.log(err.toString());
+              console.log(err.message);
               this.setState({
                 loading: false,
                 errorMessage: err.message,

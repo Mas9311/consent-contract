@@ -43,6 +43,7 @@ class JoinParty extends Component {
         } else if (await consent.methods
             .partyDoesNotExist(this.state.partyName)
             .call({from: currentAccount})) {
+
           this.setState({
             loading: false,
             errorMessage: "Error: Party must exist to be joinable",
@@ -60,6 +61,7 @@ class JoinParty extends Component {
         } else if (await consent.methods
             .partyOwner(this.state.partyName)
             .call({from: currentAccount})) {
+
           this.setState({
             loading: false,
             errorMessage: "Error: You cannot join the party you created, owner in party by default",
@@ -68,6 +70,7 @@ class JoinParty extends Component {
         } else if (!await consent.methods
             .notYetAddedToParty(this.state.partyName)
             .call({from: currentAccount})) {
+
           this.setState({
             loading: false,
             errorMessage: "Error: Already in party, cannot join again",
@@ -78,6 +81,7 @@ class JoinParty extends Component {
             .call({
               from: currentAccount
             })) {
+
           this.setState({
             loading: false,
             errorMessage: "Error: Party is full, unable to join",
@@ -88,12 +92,14 @@ class JoinParty extends Component {
             .call({
               from: currentAccount
             })) {
+
           this.setState({
             loading: false,
             errorMessage: "Error: This party has expired, no longer able to join",
             message: ""
           })
         } else {
+
           this.setState({
             loading: true,
             errorMessage: "",
@@ -115,7 +121,7 @@ class JoinParty extends Component {
                 });
           } catch (err) {
             // User clicked the reject button in the metamask popup window.
-            console.log(err.toString());
+            console.log(err.message);
             this.setState({
               loading: false,
               errorMessage: err.message,

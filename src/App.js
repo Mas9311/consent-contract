@@ -1,18 +1,17 @@
 import React, { Component } from 'react';
 import { Container, Card } from "semantic-ui-react";
+import CancelParty from "./components/CancelParty";
 import CreateParty from "./components/CreateParty";
 import CreateAccount from "./components/CreateAccount";
-
-import NavigationBar from "./components/NavigationBar";
 import JoinParty from "./components/JoinParty";
-import CancelParty from "./components/CancelParty";
+import NavigationBar from "./components/NavigationBar";
 
 class App extends Component {
 
   render() {
     return (
         <Container>
-          <NavigationBar />
+          <NavigationBar/>
           <div>
             <Card.Group itemsPerRow={2} stackable={true}>
 
@@ -21,7 +20,7 @@ class App extends Component {
                   <h4>
                     Create an account.
                   </h4>
-                  <CreateAccount />
+                  <CreateAccount/>
                 </Card.Content>
               </Card>
               <Card fluid color="purple" header="Register to Play" centered="true">
@@ -29,7 +28,7 @@ class App extends Component {
                   <h4>
                     Create a party and invite others.
                   </h4>
-                  <CreateParty />
+                  <CreateParty/>
                 </Card.Content>
               </Card>
 
@@ -40,7 +39,7 @@ class App extends Component {
                   <h4>
                     Join a party.
                   </h4>
-                  <JoinParty />
+                  <JoinParty/>
                 </Card.Content>
               </Card>
               <Card fluid color="red" header="Finalize" centered="true">
@@ -48,7 +47,7 @@ class App extends Component {
                   <h4>
                     Cancel a party.
                   </h4>
-                  <CancelParty />
+                  <CancelParty/>
                 </Card.Content>
               </Card>
 
