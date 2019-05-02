@@ -18,17 +18,7 @@
  *
  */
 
-// const HDWalletProvider = require('truffle-hdwallet-provider');
-// const infuraKey = "fj4jll3k.....";
-
-// const fs = require('fs');
-// const mnemonic = fs.readFileSync(".secret").toString().trim();
-
-// let provider = new HDWalletProvider(
-//     "Not showing you my real metamask seed",
-//     "https://rinkeby.infura.io/v3/d1cdcb7554f04c26834022596f536529", // real infura
-//     0
-// );
+var HDWalletProvider = require('truffle-hdwallet-provider');
 
 module.exports = {
   /**
@@ -56,13 +46,17 @@ module.exports = {
      network_id: "*",       // Any network (default: none)
     },
 
-    // rinkeby: {
-    //   host: "localhost", // Connect to geth on the specified
-    //   port: 8545,
-    //   from: "0xFA8A250122B81a115acD4e27591540dD6242715b",
-    //   network_id: "*",
-    //   gas: 3154206 // Gas limit used for deploys
-    // }
+    rinkeby: {
+      host: "127.0.0.1",
+      provider: async function() {
+        await new HDWalletProvider(
+            "awful benefit piece axis scan radar marble arrow long detect evoke evoke",
+            "rinkeby.infura.io/v3/d1cdcb7554f04c26834022596f536529" // real infura
+        );
+      },
+      network_id: "4"
+      // gas: 2795736 // Gas limit used for deploys
+    }
 
     // Another network with more advanced options...
     // advanced: {
@@ -102,13 +96,13 @@ module.exports = {
   // Configure your compilers
   compilers: {
     solc: {
-      version: "0.5.7",    // Fetch exact version from solc-bin (default: truffle's version)
+      version: "0.5.8",    // Fetch exact version from solc-bin (default: truffle's version)
       // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
       // settings: {          // See the solidity docs for advice about optimization and evmVersion
-      //  optimizer: {
-      //    enabled: false,
-      //    runs: 200
-      //  },
+       optimizer: {
+         enabled: true,
+         runs: 200
+       },
       //  evmVersion: "byzantium"
       // }
     }
