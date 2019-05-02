@@ -118,7 +118,9 @@ class JoinParty extends Component {
                     errorMessage: "",
                     message: "Success: You have joined the " + pn + " party"
                   });
-                  // document.getElementById('party_name').value = "";
+                  if (this.state.modal) {
+                    document.getElementById('party_name').value = "";
+                  }
                 });
           } catch (err) {
             // User clicked the reject button in the metamask popup window.

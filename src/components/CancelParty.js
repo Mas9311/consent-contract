@@ -106,8 +106,10 @@ class CancelParty extends Component {
                       errorMessage: "",
                       message: "Success: You have canceled the Party." // show the user the transaction was successful
                     });
-                    // document.getElementById('party_name').value = "";
-                    // document.getElementById('reason_cancel').value = "";
+                    if (this.state.modal) {
+                      document.getElementById('party_name').value = "";
+                      document.getElementById('reason_cancel').value = "";
+                    }
                   });
             } catch (err) {
               // User clicked the reject button in the metamask popup window.

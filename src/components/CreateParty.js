@@ -84,7 +84,9 @@ class CreateParty extends Component {
                           " with a maximum number of 1 guest " +
                           " that will close in 5 minutes."
                     });
-                    // document.getElementById('party_name').value = "";
+                    if (this.state.modal) {
+                      document.getElementById('party_name').value = "";
+                    }
                   });
             } // end 1A
 
@@ -122,8 +124,10 @@ class CreateParty extends Component {
                               " with a maximum number of 1 guest " +
                               " that will close in " + tl + " minutes."
                         });
-                        // document.getElementById('party_name').value = "";
-                        // document.getElementById('time_limit').value = "";
+                        if (this.state.modal) {
+                          document.getElementById('party_name').value = "";
+                          document.getElementById('time_limit').value = "";
+                        }
                       });
                 } else {
                   this.setState({
@@ -175,8 +179,10 @@ class CreateParty extends Component {
                               " with a maximum number of " + mg + " guest(s) " +
                               " that will close in 5 minutes."
                         });
-                        // document.getElementById('party_name').value = "";
-                        // document.getElementById('max_guests').value = "";
+                        if (this.state.modal) {
+                          document.getElementById('party_name').value = "";
+                          document.getElementById('max_guests').value = "";
+                        }
                       });
                 } else {
                   this.setState({
@@ -241,9 +247,11 @@ class CreateParty extends Component {
                                   " with a maximum number of " + mg + " guest(s) " +
                                   " that will close in " + tl + " minutes."
                             });
-                            // document.getElementById('party_name').value = "";
-                            // document.getElementById('time_limit').value = "";
-                            // document.getElementById('max_guests').value = "";
+                            if (this.state.modal) {
+                              document.getElementById('party_name').value = "";
+                              document.getElementById('time_limit').value = "";
+                              document.getElementById('max_guests').value = "";
+                            }
                           });
                     } else {
                       this.setState({

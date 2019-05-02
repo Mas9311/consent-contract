@@ -43,8 +43,10 @@ class CreateAccount extends Component {
               lastName: "", // Clear the last name field.
               message: "You have already created an Account and cannot create another."
             });
-            document.getElementById('first_input').value = "";
-            document.getElementById('last_input').value = "";
+            if (this.state.modal) {
+              document.getElementById('first_input').value = "";
+              document.getElementById('last_input').value = "";
+            }
           } else { // No problems with requirements
             this.setState({
               loading: true,
@@ -67,8 +69,10 @@ class CreateAccount extends Component {
                       lastName: "", // Clear the last name field.
                       message: "Success: Your account has been created under " + fn + " " + ln + "."
                     });
-                    // document.getElementById('first_input').value = "";
-                    // document.getElementById('last_input').value = "";
+                    if (this.state.modal) {
+                      document.getElementById('first_input').value = "";
+                      document.getElementById('last_input').value = "";
+                    }
                   });
             } catch (err) {
               // User clicked the reject button in the metamask popup window.
