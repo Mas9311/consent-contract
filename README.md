@@ -1,7 +1,7 @@
 # Cover Your Assets
 
 <p align="center">
-  <img src="../Mas9311-assets-control_flow/CYA_Logo_Zoomed.png"
+  <img src="public/CYA_Logo.png"
        align="center"
        alt="Cover Your Assets logo"
        height="120" />
