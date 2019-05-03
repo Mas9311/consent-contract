@@ -3,18 +3,23 @@ import { Button, Header, Icon, Modal, Form, Message } from "semantic-ui-react";
 import web3 from "../web3";
 import consent from "../consent";
 
+let lastPartyName = "";
+
+
 class CancelParty extends Component {
   state = {
     modalOpen: false,
-    partyName: "",
-    reason: "",
+    loading: false,
+    message: "",
     errorMessage: "",
-    loading: false
+    partyName: "",
+    reason: ""
   };
 
-  //Upon opening the Create Party modal, clear everything to a clean slate.
+  // Upon opening the Create Party modal, clear everything to a clean slate.
   handleOpen = () => this.setState({
     modalOpen: true,
+    loading: false,
     partyName: "",
     reason: "",
     message: "Please enter the party name you would like to cancel",
@@ -48,6 +53,7 @@ class CancelParty extends Component {
               .call({
                 from: currentAccount
               })) {
+
             this.setState({
               loading: false,
               errorMessage: "Error: Party is already full, therefore you cannot cancel the Party.",
@@ -69,6 +75,7 @@ class CancelParty extends Component {
               .call({
                 from: currentAccount
               })) {
+
             this.setState({
               loading: false,
               errorMessage: "Error: You must be the owner to cancel a Party.",
@@ -79,17 +86,20 @@ class CancelParty extends Component {
               .call({
                 from: currentAccount
               })) {
+
             this.setState({
               loading: false,
               errorMessage: "Error: This Party has expired, therefore you are not able to cancel.",
               message: ""
             });
           } else { // No problems with requirements
+
             this.setState({
               loading: true,
               errorMessage: "",
               message: "waiting for blockchain transaction to complete..."
             });
+
             try {
               await consent.methods.ownerCancels(
                   this.state.partyName,
@@ -99,14 +109,20 @@ class CancelParty extends Component {
                     from: currentAccount
                   })
                   .on('confirmation', (confirmationNumber, receipt) => {
+                    let len = this.state.message.length;
+                    let end = this.state.message.substring(len - 1, len);
+                    if (end !== "!") {
+                      lastPartyName = this.state.partyName;
+                    }
+
                     this.setState({
                       loading: false,
                       partyName: "",
                       reason: "",
                       errorMessage: "",
-                      message: "Success: You have canceled the Party." // show the user the transaction was successful
+                      message: "Success: You have cancelled the " + lastPartyName + " Party!"
                     });
-                    if (this.state.modal) {
+                    if (this.state.modalOpen) {
                       document.getElementById('party_name').value = "";
                       document.getElementById('reason_cancel').value = "";
                     }
@@ -131,6 +147,11 @@ class CancelParty extends Component {
           message: "Please enter a name for your Party into the correct field."
         });
       }
+    } else {
+      // User clicked while loading icon is still spinning.
+      this.setState({
+        message: "Sorry for the delay, the transaction is still processing."
+      });
     }
   };
 
@@ -181,7 +202,8 @@ class CancelParty extends Component {
           </Modal.Content>
           <Modal.Actions>
             <Button color="red" onClick={this.handleClose} inverted>
-              <Icon name="cancel"/> Close
+              <Icon name="cancel"/>
+              Close
             </Button>
           </Modal.Actions>
         </Modal>

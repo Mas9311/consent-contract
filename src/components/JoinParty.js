@@ -3,17 +3,22 @@ import { Button, Header, Icon, Modal, Form, Message } from "semantic-ui-react";
 import web3 from "../web3";
 import consent from "../consent";
 
+let lastPartyName = "";
+
+
 class JoinParty extends Component {
   state = {
     modalOpen: false,
-    partyName: "",
+    loading: false,
+    message: "",
     errorMessage: "",
-    loading: false
+    partyName: "",
   };
 
-  //Upon opening the Create Party modal, clear everything to a clean slate.
+  // Upon opening the Create Party modal, clear everything to a clean slate.
   handleOpen = () => this.setState({
     modalOpen: true,
+    loading: false,
     partyName: "",
     message: "Please enter the Party name you would like to join",
     errorMessage: ""
@@ -59,7 +64,7 @@ class JoinParty extends Component {
             message: ""
           });
         } else if (await consent.methods
-            .partyOwner(this.state.partyName)
+            .partyOwner(this.state.partyName) // You are not the Party owner
             .call({from: currentAccount})) {
 
           this.setState({
@@ -68,7 +73,7 @@ class JoinParty extends Component {
             message: ""
           });
         } else if (!await consent.methods
-            .notYetAddedToParty(this.state.partyName)
+            .notYetAddedToParty(this.state.partyName) // You have already been added to the Party
             .call({from: currentAccount})) {
 
           this.setState({
@@ -77,7 +82,7 @@ class JoinParty extends Component {
             message: ""
           })
         } else if (await consent.methods
-            .partyFull(this.state.partyName)
+            .partyFull(this.state.partyName) // The Party is full
             .call({
               from: currentAccount
             })) {
@@ -88,7 +93,7 @@ class JoinParty extends Component {
             message: ""
           })
         } else if (await consent.methods
-            .partyHasExpired(this.state.partyName)
+            .partyHasExpired(this.state.partyName) // The Party's closeTime has expired
             .call({
               from: currentAccount
             })) {
@@ -98,7 +103,7 @@ class JoinParty extends Component {
             errorMessage: "Error: Party has already expired and no one is able to join anymore.",
             message: ""
           })
-        } else {
+        } else { // No problems with requirements
 
           this.setState({
             loading: true,
@@ -111,14 +116,19 @@ class JoinParty extends Component {
                   from: currentAccount
                 })
                 .on('confirmation', (confirmationNumber, receipt) => {
-                  const pn = this.state.partyName;
+                  let len = this.state.message.length;
+                  let end = this.state.message.substring(len - 1, len);
+                  if (end !== "!") {
+                    lastPartyName = this.state.partyName;
+                  }
+
                   this.setState({
                     loading: false,
                     partyName: "",
                     errorMessage: "",
-                    message: "Success: You have joined the " + pn + " party"
+                    message: "Success: You joined the " + lastPartyName + " Party!"
                   });
-                  if (this.state.modal) {
+                  if (this.state.modalOpen) {
                     document.getElementById('party_name').value = "";
                   }
                 });
@@ -184,7 +194,8 @@ class JoinParty extends Component {
           </Modal.Content>
           <Modal.Actions>
             <Button color="red" onClick={this.handleClose} inverted>
-              <Icon name="cancel"/> Close
+              <Icon name="cancel"/>
+              Close
             </Button>
           </Modal.Actions>
         </Modal>

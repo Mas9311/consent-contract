@@ -3,19 +3,26 @@ import { Button, Header, Icon, Modal, Form, Message } from "semantic-ui-react";
 import web3 from "../web3";
 import consent from "../consent";
 
+let latestPartyName = "";
+let latestMaxGuests = "";
+let latestTimeLimit = "";
+
+
 class CreateParty extends Component {
   state = {
     modalOpen: false,
+    loading: false,
+    message: "",
+    errorMessage: "",
     partyName: "",
     maxNumberOfGuests: "",
-    timeLimit: "",
-    errorMessage: "",
-    loading: false
+    timeLimit: ""
   };
 
-  //Upon opening the Create Party modal, clear everything to a clean slate.
+  // Upon opening the Create Party modal, clear everything to a clean slate.
   handleOpen = () => this.setState({
     modalOpen: true,
+    loading: false,
     partyName: "",
     maxNumberOfGuests: "",
     timeLimit: "",
@@ -74,17 +81,20 @@ class CreateParty extends Component {
                     from: currentAccount
                   })
                   .on('confirmation', (confirmationNumber, receipt) => {
-                    // Can only update this.state once the transaction has been approved.
-                    const pn = this.state.partyName;
+                    let len = this.state.message.length;
+                    let end = this.state.message.substring(len - 1, len);
+                    if (end !== "!") {
+                      latestPartyName = this.state.partyName;
+                    }
 
                     this.setState({
                       loading: false,
                       partyName: "",
-                      message: "Transaction approved. Party name: " + pn +
+                      message: "Transaction approved. Party name: " + latestPartyName +
                           " with a maximum number of 1 guest " +
-                          " that will close in 5 minutes."
+                          " that will close in 5 minutes!"
                     });
-                    if (this.state.modal) {
+                    if (this.state.modalOpen) {
                       document.getElementById('party_name').value = "";
                     }
                   });
@@ -113,18 +123,22 @@ class CreateParty extends Component {
                         from: currentAccount
                       })
                       .on('confirmation', (confirmationNumber, receipt) => {
-                        // Can only update this.state once the transaction has been approved.
-                        const pn = this.state.partyName;
-                        const tl = this.state.timeLimit;
+                        let len = this.state.message.length;
+                        let end = this.state.message.substring(len - 1, len);
+                        if (end !== "!") {
+                          latestPartyName = this.state.partyName;
+                          latestTimeLimit = this.state.timeLimit;
+                        }
+
                         this.setState({
                           loading: false,
                           partyName: "",
                           timeLimit: "",
-                          message: "Transaction approved. Party name: " + pn +
+                          message: "Transaction approved. Party name: " + latestPartyName +
                               " with a maximum number of 1 guest " +
-                              " that will close in " + tl + " minutes."
+                              " that will close in " + latestTimeLimit + " minutes!"
                         });
-                        if (this.state.modal) {
+                        if (this.state.modalOpen) {
                           document.getElementById('party_name').value = "";
                           document.getElementById('time_limit').value = "";
                         }
@@ -168,18 +182,22 @@ class CreateParty extends Component {
                         from: currentAccount
                       })
                       .on('confirmation', (confirmationNumber, receipt) => {
-                        // Can only update this.state once the transaction has been approved.
-                        const pn = this.state.partyName;
-                        const mg = this.state.maxNumberOfGuests;
+                        let len = this.state.message.length;
+                        let end = this.state.message.substring(len - 1, len);
+                        if (end !== "!") {
+                          latestPartyName = this.state.partyName;
+                          latestMaxGuests = this.state.maxNumberOfGuests;
+                        }
+
                         this.setState({
                           loading: false,
                           partyName: "",
                           maxNumberOfGuests: "",
-                          message: "Transaction approved. Party name: " + pn +
-                              " with a maximum number of " + mg + " guest(s) " +
-                              " that will close in 5 minutes."
+                          message: "Transaction approved. Party name: " + latestPartyName +
+                              " with a maximum number of " + latestMaxGuests + " guest(s) " +
+                              " that will close in 5 minutes!"
                         });
-                        if (this.state.modal) {
+                        if (this.state.modalOpen) {
                           document.getElementById('party_name').value = "";
                           document.getElementById('max_guests').value = "";
                         }
@@ -234,20 +252,24 @@ class CreateParty extends Component {
                             from: currentAccount
                           })
                           .on('confirmation', (confirmationNumber, receipt) => {
-                            const pn = this.state.partyName;
-                            const tl = this.state.timeLimit;
-                            const mg = this.state.maxNumberOfGuests;
+                            let len = this.state.message.length;
+                            let end = this.state.message.substring(len - 1, len);
+                            if (end !== "!") {
+                              latestPartyName = this.state.partyName;
+                              latestTimeLimit = this.state.timeLimit;
+                              latestMaxGuests = this.state.maxNumberOfGuests;
+                            }
 
                             this.setState({
                               loading: false,
                               partyName: "",
                               timeLimit: "",
                               maxNumberOfGuests: "",
-                              message: "Transaction approved. Party name: " + pn +
-                                  " with a maximum number of " + mg + " guest(s) " +
-                                  " that will close in " + tl + " minutes."
+                              message: "Transaction approved. " + latestPartyName + " Party" +
+                                  " with a maximum number of " + latestMaxGuests + " guest(s) " +
+                                  " that will close in " + latestTimeLimit + " minutes!"
                             });
-                            if (this.state.modal) {
+                            if (this.state.modalOpen) {
                               document.getElementById('party_name').value = "";
                               document.getElementById('time_limit').value = "";
                               document.getElementById('max_guests').value = "";
@@ -334,7 +356,7 @@ class CreateParty extends Component {
               <Form.Field>
                 <label>Maximum Guests permitted to join your party</label>
                 <input id="max_guests"
-                       placeholder="(optional) defaults to no limit"
+                       placeholder="(optional) defaults to 1 guest"
                        onChange={event =>
                            this.setState({
                              maxNumberOfGuests: event.target.value
@@ -365,7 +387,8 @@ class CreateParty extends Component {
           </Modal.Content>
           <Modal.Actions>
             <Button color="red" onClick={this.handleClose} inverted>
-              <Icon name="cancel"/> Close
+              <Icon name="cancel"/>
+              Close
             </Button>
           </Modal.Actions>
         </Modal>

@@ -3,18 +3,24 @@ import { Button, Header, Icon, Modal, Form, Message } from "semantic-ui-react";
 import web3 from "../web3";
 import consent from "../consent";
 
+let latestFirstName = "";
+let latestLastName = "";
+
+
 class CreateAccount extends Component {
   state = {
     modalOpen: false,
-    firstName: "",
-    lastName: "",
+    loading: false,
+    message: "",
     errorMessage: "",
-    loading: false
+    firstName: "",
+    lastName: ""
   };
 
   // Upon opening the Create Account modal, clear everything to a clean slate.
   handleOpen = () => this.setState({
     modalOpen: true,
+    loading: false,
     firstName: "",
     lastName: "",
     message: "Please enter your first and last name to create an account.",
@@ -38,12 +44,12 @@ class CreateAccount extends Component {
               })) {
 
             this.setState({
-              lading: false,
+              loading: false,
               firstName: "", // Clear the first name field so they don't click it again.
               lastName: "", // Clear the last name field.
               message: "You have already created an Account and cannot create another."
             });
-            if (this.state.modal) {
+            if (this.state.modalOpen) {
               document.getElementById('first_input').value = "";
               document.getElementById('last_input').value = "";
             }
@@ -60,16 +66,21 @@ class CreateAccount extends Component {
                     from: currentAccount
                   })
                   .on('confirmation', (confirmationNumber, receipt) => {
-                    // Can only update this.state's first/last/message once the transaction has been approved.
-                    const fn = this.state.firstName;
-                    const ln = this.state.lastName;
+                    let len = this.state.message.length;
+                    let end = this.state.message.substring(len - 1, len);
+                    if (end !== "!") {
+                      latestFirstName = this.state.firstName;
+                      latestLastName = this.state.lastName;
+                    }
+
                     this.setState({
                       loading: false,
                       firstName: "", // Clear the first name field so they don't click it again.
                       lastName: "", // Clear the last name field.
-                      message: "Success: Your account has been created under " + fn + " " + ln + "."
+                      message: "Success: Your account has been created under " +
+                          latestFirstName + " " + latestLastName + "!"
                     });
-                    if (this.state.modal) {
+                    if (this.state.modalOpen) {
                       document.getElementById('first_input').value = "";
                       document.getElementById('last_input').value = "";
                     }
@@ -145,7 +156,8 @@ class CreateAccount extends Component {
           </Modal.Content>
           <Modal.Actions>
             <Button color="red" onClick={this.handleClose} inverted>
-              <Icon name="cancel"/> Close
+              <Icon name="cancel"/>
+              Close
             </Button>
           </Modal.Actions>
         </Modal>
