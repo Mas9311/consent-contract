@@ -5,17 +5,18 @@
   "dependencies": {
     "ganache-cli": "^6.4.3",
     "mocha": "^6.1.4",
-    "react": "16.8.6",
-    "react-dom": "16.8.6",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
     "react-scripts": "^3.0.0",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.86.0",
-    "solc": "0.5.8",
+    "solc": "^0.5.8",
     "truffle": "^5.0.15",
-    "truffle-hdwallet-provider": "0.0.3",
-    "web3": "^1.0.0-beta.53"
+    "truffle-hdwallet-provider": "^1.0.8",
+    "web3": "^1.0.0-beta.54"
   },
   "scripts": {
+    "compile": "node_modules/.bin/truffle compile",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "mocha --timeout 4000",
@@ -29,8 +30,5 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ],
-  "devDependencies": {
-    "semantic-ui-react": "^0.86.0"
-  }
+  ]
 }
