@@ -1,4 +1,4 @@
-const ConsentContract = artifacts.require("ConsentContract.sol");
+const ConsentContract = artifacts.require("ConsentContract");
 const assert = require("assert");
 let consent;
 
