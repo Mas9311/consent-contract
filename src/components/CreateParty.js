@@ -112,7 +112,7 @@ class CreateParty extends Component {
                 console.log("timeLimit is not a number. " + err.message);
               } // end convert timeLimit to a number
 
-              if (typeof this.state.timeLimit === 'number') {
+              if (!isNaN(this.state.timeLimit)) {
                 if (this.state.timeLimit > 0) {
                   await consent.methods
                       .createParty1B(
@@ -170,7 +170,7 @@ class CreateParty extends Component {
                 console.log("maxNumberOfGuests is not a number. " + err.message);
               } // end convert maxNumberOfGuests to a number
 
-              if (typeof this.state.maxNumberOfGuests === 'number') {
+              if (!isNaN(this.state.maxNumberOfGuests)) {
                 if (this.state.maxNumberOfGuests > 0) {
                   await consent.methods
                       .createParty1C(
@@ -236,9 +236,9 @@ class CreateParty extends Component {
                 console.log("timeLimit is not a number. " + err.message);
               } // end convert timeLimit to a number
 
-              if (typeof this.state.timeLimit === 'number') {
+              if (!isNaN(this.state.timeLimit)) {
                 if (this.state.timeLimit > 0) {
-                  if (typeof this.state.maxNumberOfGuests === 'number') {
+                  if (!isNaN(this.state.maxNumberOfGuests)) {
                     if (this.state.maxNumberOfGuests > 0) {
                       await consent.methods
                           .createParty1D(
