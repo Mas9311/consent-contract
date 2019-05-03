@@ -4,6 +4,7 @@ import web3 from "../web3";
 import consent from "../consent";
 
 let lastPartyName = "";
+let latestBlockNumber = 0;
 
 
 class JoinParty extends Component {
@@ -116,20 +117,19 @@ class JoinParty extends Component {
                   from: currentAccount
                 })
                 .on('confirmation', (confirmationNumber, receipt) => {
-                  let len = this.state.message.length;
-                  let end = this.state.message.substring(len - 1, len);
-                  if (end !== "!") {
+                  if (receipt.blockNumber > latestBlockNumber) {
+                    latestBlockNumber = receipt.blockNumber;
                     lastPartyName = this.state.partyName;
-                  }
 
-                  this.setState({
-                    loading: false,
-                    partyName: "",
-                    errorMessage: "",
-                    message: "Success: You joined the " + lastPartyName + " Party!"
-                  });
-                  if (this.state.modalOpen) {
-                    document.getElementById('party_name').value = "";
+                    this.setState({
+                      loading: false,
+                      partyName: "",
+                      errorMessage: "",
+                      message: "Success: You joined the " + lastPartyName + " Party!"
+                    });
+                    if (this.state.modalOpen) {
+                      document.getElementById('party_name').value = "";
+                    }
                   }
                 });
           } catch (err) {
@@ -151,7 +151,7 @@ class JoinParty extends Component {
     } else {
       // User clicked while loading icon is still spinning.
       this.setState({
-        message: "Sorry for the delay, the transaction is still processing."
+        message: "Sorry for the delay, the transaction is still processing..."
       });
     }
   };

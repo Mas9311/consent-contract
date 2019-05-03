@@ -3,7 +3,8 @@ import { Button, Header, Icon, Modal, Form, Message } from "semantic-ui-react";
 import web3 from "../web3";
 import consent from "../consent";
 
-let lastPartyName = "";
+let latestPartyName = "";
+let latestBlockNumber = 0;
 
 
 class CancelParty extends Component {
@@ -48,15 +49,15 @@ class CancelParty extends Component {
               errorMessage: "Error: You must create an Account before cancelling a Party.",
               message: ""
             });
-          } else if (await consent.methods
-              .partyFull(this.state.partyName) // Party is at max capacity
+          } else if (!await consent.methods
+              .partyExists(this.state.partyName) // Party does not exist or is finalized
               .call({
                 from: currentAccount
               })) {
 
             this.setState({
               loading: false,
-              errorMessage: "Error: Party is already full, therefore you cannot cancel the Party.",
+              errorMessage: "Error: Party cannot be canceled if it has not been created yet.",
               message: ""
             });
           } else if (!await consent.methods
@@ -79,6 +80,17 @@ class CancelParty extends Component {
             this.setState({
               loading: false,
               errorMessage: "Error: You must be the owner to cancel a Party.",
+              message: ""
+            });
+          } else if (await consent.methods
+              .partyFull(this.state.partyName) // Party is at max capacity
+              .call({
+                from: currentAccount
+              })) {
+
+            this.setState({
+              loading: false,
+              errorMessage: "Error: Party is already full, therefore you cannot cancel the Party.",
               message: ""
             });
           } else if (await consent.methods
@@ -109,22 +121,21 @@ class CancelParty extends Component {
                     from: currentAccount
                   })
                   .on('confirmation', (confirmationNumber, receipt) => {
-                    let len = this.state.message.length;
-                    let end = this.state.message.substring(len - 1, len);
-                    if (end !== "!") {
-                      lastPartyName = this.state.partyName;
-                    }
+                    if (receipt.blockNumber > latestBlockNumber) {
+                      latestBlockNumber = receipt.blockNumber;
+                      latestPartyName = this.state.partyName;
 
-                    this.setState({
-                      loading: false,
-                      partyName: "",
-                      reason: "",
-                      errorMessage: "",
-                      message: "Success: You have cancelled the " + lastPartyName + " Party!"
-                    });
-                    if (this.state.modalOpen) {
-                      document.getElementById('party_name').value = "";
-                      document.getElementById('reason_cancel').value = "";
+                      this.setState({
+                        loading: false,
+                        partyName: "",
+                        reason: "",
+                        errorMessage: "",
+                        message: "Success: You canceled the " + latestPartyName + " Party."
+                      });
+                      if (this.state.modalOpen) {
+                        document.getElementById('party_name').value = "";
+                        document.getElementById('reason_cancel').value = "";
+                      }
                     }
                   });
             } catch (err) {
@@ -150,7 +161,7 @@ class CancelParty extends Component {
     } else {
       // User clicked while loading icon is still spinning.
       this.setState({
-        message: "Sorry for the delay, the transaction is still processing."
+        message: "Sorry for the delay, the transaction is still processing..."
       });
     }
   };
@@ -180,7 +191,7 @@ class CancelParty extends Component {
                 />
               </Form.Field>
               <Form.Field>
-                <label>Your Party Name</label>
+                <label>Reason For Cancelling</label>
                 <input id="reason_cancel"
                        placeholder="Reason for cancelling"
                        onChange={event =>

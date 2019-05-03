@@ -6,6 +6,7 @@ import consent from "../consent";
 let latestPartyName = "";
 let latestMaxGuests = "";
 let latestTimeLimit = "";
+let latestBlockNumber = 0;
 
 
 class CreateParty extends Component {
@@ -81,21 +82,20 @@ class CreateParty extends Component {
                     from: currentAccount
                   })
                   .on('confirmation', (confirmationNumber, receipt) => {
-                    let len = this.state.message.length;
-                    let end = this.state.message.substring(len - 1, len);
-                    if (end !== "!") {
+                    if (receipt.blockNumber > latestBlockNumber) {
+                      latestBlockNumber = receipt.blockNumber;
                       latestPartyName = this.state.partyName;
-                    }
 
-                    this.setState({
-                      loading: false,
-                      partyName: "",
-                      message: "Transaction approved. Party name: " + latestPartyName +
-                          " with a maximum number of 1 guest " +
-                          " that will close in 5 minutes!"
-                    });
-                    if (this.state.modalOpen) {
-                      document.getElementById('party_name').value = "";
+                      this.setState({
+                        loading: false,
+                        partyName: "",
+                        message: "Transaction approved. Party name: " + latestPartyName +
+                            " with a maximum number of 1 guest " +
+                            " that will close in 5 minutes."
+                      });
+                      if (this.state.modalOpen) {
+                        document.getElementById('party_name').value = "";
+                      }
                     }
                   });
             } // end 1A
@@ -123,24 +123,23 @@ class CreateParty extends Component {
                         from: currentAccount
                       })
                       .on('confirmation', (confirmationNumber, receipt) => {
-                        let len = this.state.message.length;
-                        let end = this.state.message.substring(len - 1, len);
-                        if (end !== "!") {
+                        if (receipt.blockNumber > latestBlockNumber) {
+                          latestBlockNumber = receipt.blockNumber;
                           latestPartyName = this.state.partyName;
                           latestTimeLimit = this.state.timeLimit;
-                        }
 
-                        this.setState({
-                          loading: false,
-                          partyName: "",
-                          timeLimit: "",
-                          message: "Transaction approved. Party name: " + latestPartyName +
-                              " with a maximum number of 1 guest " +
-                              " that will close in " + latestTimeLimit + " minutes!"
-                        });
-                        if (this.state.modalOpen) {
-                          document.getElementById('party_name').value = "";
-                          document.getElementById('time_limit').value = "";
+                          this.setState({
+                            loading: false,
+                            partyName: "",
+                            timeLimit: "",
+                            message: "Transaction approved. Party name: " + latestPartyName +
+                                " with a maximum number of 1 guest " +
+                                " that will close in " + latestTimeLimit + " minutes."
+                          });
+                          if (this.state.modalOpen) {
+                            document.getElementById('party_name').value = "";
+                            document.getElementById('time_limit').value = "";
+                          }
                         }
                       });
                 } else {
@@ -182,24 +181,23 @@ class CreateParty extends Component {
                         from: currentAccount
                       })
                       .on('confirmation', (confirmationNumber, receipt) => {
-                        let len = this.state.message.length;
-                        let end = this.state.message.substring(len - 1, len);
-                        if (end !== "!") {
+                        if (receipt.blockNumber > latestBlockNumber) {
+                          latestBlockNumber = receipt.blockNumber;
                           latestPartyName = this.state.partyName;
                           latestMaxGuests = this.state.maxNumberOfGuests;
-                        }
 
-                        this.setState({
-                          loading: false,
-                          partyName: "",
-                          maxNumberOfGuests: "",
-                          message: "Transaction approved. Party name: " + latestPartyName +
-                              " with a maximum number of " + latestMaxGuests + " guest(s) " +
-                              " that will close in 5 minutes!"
-                        });
-                        if (this.state.modalOpen) {
-                          document.getElementById('party_name').value = "";
-                          document.getElementById('max_guests').value = "";
+                          this.setState({
+                            loading: false,
+                            partyName: "",
+                            maxNumberOfGuests: "",
+                            message: "Transaction approved. Party name: " + latestPartyName +
+                                " with a maximum number of " + latestMaxGuests + " guest(s) " +
+                                " that will close in 5 minutes."
+                          });
+                          if (this.state.modalOpen) {
+                            document.getElementById('party_name').value = "";
+                            document.getElementById('max_guests').value = "";
+                          }
                         }
                       });
                 } else {
@@ -252,27 +250,26 @@ class CreateParty extends Component {
                             from: currentAccount
                           })
                           .on('confirmation', (confirmationNumber, receipt) => {
-                            let len = this.state.message.length;
-                            let end = this.state.message.substring(len - 1, len);
-                            if (end !== "!") {
+                            if (receipt.blockNumber > latestBlockNumber) {
+                              latestBlockNumber = receipt.blockNumber;
                               latestPartyName = this.state.partyName;
                               latestTimeLimit = this.state.timeLimit;
                               latestMaxGuests = this.state.maxNumberOfGuests;
-                            }
 
-                            this.setState({
-                              loading: false,
-                              partyName: "",
-                              timeLimit: "",
-                              maxNumberOfGuests: "",
-                              message: "Transaction approved. " + latestPartyName + " Party" +
-                                  " with a maximum number of " + latestMaxGuests + " guest(s) " +
-                                  " that will close in " + latestTimeLimit + " minutes!"
-                            });
-                            if (this.state.modalOpen) {
-                              document.getElementById('party_name').value = "";
-                              document.getElementById('time_limit').value = "";
-                              document.getElementById('max_guests').value = "";
+                              this.setState({
+                                loading: false,
+                                partyName: "",
+                                timeLimit: "",
+                                maxNumberOfGuests: "",
+                                message: "Transaction approved. " + latestPartyName + " Party" +
+                                    " with a maximum number of " + latestMaxGuests + " guest(s) " +
+                                    " that will close in " + latestTimeLimit + " minutes."
+                              });
+                              if (this.state.modalOpen) {
+                                document.getElementById('party_name').value = "";
+                                document.getElementById('time_limit').value = "";
+                                document.getElementById('max_guests').value = "";
+                              }
                             }
                           });
                     } else {
@@ -323,7 +320,7 @@ class CreateParty extends Component {
     } else {
       // User clicked while loading icon is still spinning.
       this.setState({
-        message: "Sorry for the delay, the transaction is still processing."
+        message: "Sorry for the delay, the transaction is still processing..."
       });
     } // end loading is spinning check
   };

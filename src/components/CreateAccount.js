@@ -5,6 +5,7 @@ import consent from "../consent";
 
 let latestFirstName = "";
 let latestLastName = "";
+let latestBlockNumber = 0;
 
 
 class CreateAccount extends Component {
@@ -66,23 +67,22 @@ class CreateAccount extends Component {
                     from: currentAccount
                   })
                   .on('confirmation', (confirmationNumber, receipt) => {
-                    let len = this.state.message.length;
-                    let end = this.state.message.substring(len - 1, len);
-                    if (end !== "!") {
+                    if (receipt.blockNumber > latestBlockNumber) {
+                      latestBlockNumber = receipt.blockNumber;
                       latestFirstName = this.state.firstName;
                       latestLastName = this.state.lastName;
-                    }
 
-                    this.setState({
-                      loading: false,
-                      firstName: "", // Clear the first name field so they don't click it again.
-                      lastName: "", // Clear the last name field.
-                      message: "Success: Your account has been created under " +
-                          latestFirstName + " " + latestLastName + "!"
-                    });
-                    if (this.state.modalOpen) {
-                      document.getElementById('first_input').value = "";
-                      document.getElementById('last_input').value = "";
+                      this.setState({
+                        loading: false,
+                        firstName: "", // Clear the first name field so they don't click it again.
+                        lastName: "", // Clear the last name field.
+                        message: "Success: Your account has been created under " +
+                            latestFirstName + " " + latestLastName + "."
+                      });
+                      if (this.state.modalOpen) {
+                        document.getElementById('first_input').value = "";
+                        document.getElementById('last_input').value = "";
+                      }
                     }
                   });
             } catch (err) {
@@ -110,7 +110,7 @@ class CreateAccount extends Component {
     } else {
       // User clicked while loading icon is still spinning.
       this.setState({
-        message: "Sorry for the delay, the transaction is still processing."
+        message: "Sorry for the delay, the transaction is still processing..."
       });
     }
   };
